@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block titel %}
+  Strategien Liste
+{%endblock%}
+
+{% block content %}
+<h1>Strategien</h1>
+<table>
+    <tr>
+      <th>Name</th>
+      <th>Beschreibung</th>
+    </tr>
+{% for strategie in object_list%}
+<tr>
+    <td><a href='{{strategie.get_absolute_url}}'>{{strategie.name}}</a></td>
+    <td>{{strategie.beschreibung}}</td>
+</tr>
+{%endfor%}
+</table>   
+ 
+<form action="./erstellen/">
+    <input type="submit" value="Neue Strategie" />
+</form>
+
+<div>
+    {% include 'zurück.html' with link="/../" %}
+</div>
+{% endblock %}
+
+   

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block titel %}Regel entfernen{%endblock%}
+
+
+{% block content %}
+
+<form action='.' method='POST'> {% csrf_token %}
+    <h1>Sind Sie sicher, dass Sie die Regel "{{object.name}}" entfernen möchten?</h1>
+    <p><input type='submit' value='Ja' /> <a href='../'>Abbrechen</a></p>
+
+</form>
+
+<form action="/regeln/{{object.id}}">
+    <input type="submit" value="Zurück" />
+</form>
+{% endblock %}

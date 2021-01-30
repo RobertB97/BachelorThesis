@@ -1,0 +1,19 @@
+<!-- Können hier per include noch verbessern -->
+   
+<section class="container"> Verwendete Regeln
+    
+</section>
+<section class="container"> Verfügbare Regeln
+
+    {% for regel in regeln %}
+    
+    <div class="draggable" draggable="true">
+        <span class="Reihenfolgennummer">{{forloop.counter}}</span> 
+        <span class="Id">{{regel.id}}</span>
+        <span class="Name">{{regel.name}}</span>
+        <span class="Code" hidden>{{regel.code}}</span>
+    </div>
+    {%endfor%}
+
+    
+</section>

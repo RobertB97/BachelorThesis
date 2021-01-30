@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block titel %}Regel Liste{%endblock%}
+
+
+{% block style %}
+<style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+      min-width:100px;
+    }
+    tr:nth-child(odd) {
+      background-color: #f88b8b;
+    }
+    tr:nth-child(even) {
+      background-color: #ecdfdf;
+    }
+    </style>
+
+{% endblock %} 
+{% block content %}
+<h1>Regeln</h1>
+<table>
+    <tr>
+      <th>Name</th>
+      <th>Beschreibung</th>
+    </tr>
+{% for regel in object_list%}
+<tr>
+    <td><a href='{{regel.get_absolute_url}}'>{{regel.name}}</a></td>
+    <td>{{regel.beschreibung}}</td>
+</tr>
+{%endfor%}
+</table>   
+
+    
+<form action="./erstellen/">
+    <input type="submit" value="Neue Regel" />
+</form>
+
+<div>
+    {% include 'zurück.html' with link="/../" %}
+</div>
+{% endblock %}
+
+   

@@ -1,0 +1,13 @@
+{%extends 'base.html' %}
+
+{% block titel %}Regel erstellen{%endblock%}
+
+{% block content %}
+    <form action="." method="post"> {% csrf_token %}
+        {{form.as_p}}  
+        <input type='submit' value="Erstellen">
+    </form>
+    <div>{% include 'zurück.html' with link="/regeln/" %}</div>
+{% endblock %}
+
+

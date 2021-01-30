@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block titel %}
+    Indikator bearbeiten
+{%endblock%}
+
+{% block content %}
+    <form action="." method="post"> {% csrf_token %}
+        {{form.as_p}}  
+        <input type='submit' value="Speichern">
+    </form>
+    <form action="/indikatoren/{{object.id}}">
+        <input type="submit" value="Zurück" />
+    </form>
+{% endblock %}
+
+

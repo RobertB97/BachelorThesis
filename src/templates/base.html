@@ -1,0 +1,21 @@
+<!Doctype html>
+<!-- Base Struktur für jede HTML Seite-->
+<html>
+<head>
+    <title>{% block titel %}{%endblock%}</title>
+    <!-- {% load static %}  probably not needed-->
+
+    {% include "navbar_head.html" %}
+
+    
+    {% block style %}{% endblock %} <!-- Block für CSS Style  -->
+    {% block skripte %}{% endblock %}  <!-- zusätzlichen Skripte -->
+</head>
+<body>
+
+    {% include "navbar_body.html" %}
+    {% block content %}{% endblock %} <!-- allg. Block für HTML   -->
+
+</body>
+</html>
+
