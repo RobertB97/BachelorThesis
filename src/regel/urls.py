@@ -1,6 +1,6 @@
 from django.urls import path
 from regel.views import (
-    RegelErstellenView,
+    RegelHinzufuegenView,
     RegelListeView,
     RegelDetailView,
     RegelBearbeitenView,
@@ -11,8 +11,8 @@ from regel.views import (
 app_name = 'regel'
 urlpatterns = [
     path('', RegelListeView.as_view(), name='regel-liste'),
-    path('erstellen/', RegelErstellenView.as_view(), name='regel-erstellen'),
-    path('<int:id>/', RegelDetailView.as_view(), name='regel-detail'),
+    path('hinzufuegen/', RegelHinzufuegenView.as_view(), name='regel-hinzufuegen'),
+    path('<int:id>/', RegelDetailView.as_view(), name='regel-details'),
     path('<int:id>/bearbeiten/', RegelBearbeitenView.as_view(), name='regel-bearbeiten'),
     path('<int:id>/entfernen/', RegelEntfernenView.as_view(), name='regel-entfernen'),
 ]

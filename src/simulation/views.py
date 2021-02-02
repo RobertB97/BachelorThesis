@@ -26,9 +26,15 @@ from .forms import SimulationModelForm
 from .models import Simulation
 from strategie.models import Strategie
 
-class SimulationErstellenView(CreateView):
+import requests
+from requests.exceptions import ConnectionError
+from django.http import HttpResponse, JsonResponse
+import json
+
+
+class SimulationHinzufuegenView(CreateView):
     form_class = SimulationModelForm
-    template_name = 'simulation/simulation_erstellen.html'
+    template_name = 'simulation/simulation_hinzufuegen.html'
     success_url = '/simulationen/' 
 
     def form_valid(self, form):
@@ -42,6 +48,7 @@ class SimulationErstellenView(CreateView):
 
 class SimulationErgebnisView(View):
     template_name = 'simulation_ergebnis.html'
+    
     def get(self,request):
         data = pd.DataFrame(MSFT)[:50]
         print(data.date)
@@ -77,34 +84,80 @@ class SimulationErgebnisView(View):
         return render(request, 'simulation/simulation_ergebnis.html', {'script':script, 'div':div})
 
 class SimulationListeView(ListView):
-    template_name = 'simulation/simulation_liste.html'  # with this command we can set a new path to our templates
-    queryset = Simulation.objects.all() # since its a ListView, Django will look for template <blog>/<modelname>_list.html
+    template_name = 'simulation/simulation_liste.html'
+    def get_queryset(self):
+        temp = versuche_request(self, None,"GET",None)
+        if(temp==500):
+            return {}
+        return temp
 
 
 class SimulationBearbeitenView(UpdateView):
     template_name = 'simulation/simulation_bearbeiten.html'  
     form_class = SimulationModelForm
-    queryset = Simulation.objects.all()
     
     def get_object(self):
         id_ = self.kwargs.get("id")
-        return get_object_or_404(Simulation, id=id_)
+        temp = versuche_request(self,None,"GET",id_)
+        if(temp == 500):
+            return HttpResponse(fehler_message)
+        return temp
 
     def form_valid(self, form):
-        #TODO add redirect after succesful update or confirmation?
-        return super().form_valid(form)
+        id_ = self.kwargs.get("id")
+        temp = versuche_request(self,form,"PUT",id_)
+        if(temp==500):
+            return HttpResponse(fehler_message)    
+        if(temp==200):
+            return super().form_valid(form) 
 
 class SimulationEntfernenView(DeleteView):
     template_name = 'simulation/simulation_entfernen.html' 
     #queryset = Article.objects.all() can be used for filtering the querried objects
     
+    
     def get_object(self):
         id_ = self.kwargs.get("id")
-        return get_object_or_404(Simulation, id=id_)
+        temp = versuche_request(self,None,"GET",id_)
+        if(temp == 500):
+            return HttpResponse(fehler_message)
+        return temp
 
     def get_success_url(self):
         return reverse('simulation:simulation-liste')
 
+
+def versuche_request(outerself, form, http_methode, id):
+    url = 'http://localhost:8001/regeln/'
+    if(id != None):
+        url = url + str(id)+"/"
+    if(form!=None):
+        daten=form.cleaned_data
+    try:
+        if(http_methode=="GET"):
+            queryset = requests.get(url)
+            if(id == None):
+                queryset = queryset.json()
+                return queryset
+        if(http_methode=="POST"):
+            queryset = requests.post(url, data=daten)
+        if(http_methode=="PUT"):
+            queryset = requests.put(url, data=daten)
+            print(queryset.json())
+        if(http_methode=="DELETE"):
+            url = 'http://localhost:8001/regeln/entfernen/'+ str(id)+"/"
+            queryset = requests.get(url)
+        
+    except ConnectionError as e:
+        return 500
+    if(id !=None and http_methode=="GET"):
+        jsonObjekt = json.loads(queryset.text)
+        objektFuerDarstellung = Regel()
+        for key in jsonObjekt.keys(): 
+            if key in dir(objektFuerDarstellung):
+                setattr(objektFuerDarstellung,key,jsonObjekt[key])
+        return objektFuerDarstellung
+    return 200
 
 
 # def test(request):

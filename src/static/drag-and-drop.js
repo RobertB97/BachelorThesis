@@ -1,6 +1,31 @@
 const draggableListe = document.querySelectorAll('.draggable') // Liste mit allen verschiebbaren Elementen
 const containerListe = document.querySelectorAll('.container') // Liste mit allen Containern
 
+
+$(document).ready( function () {
+  console.log($("#id_regeln").val())
+  regelnLaden()
+  elementeNummerieren()
+});
+
+function regelnLaden(){
+  const regelIDs = $("#id_regeln").val().split(",")
+
+  regelIDs.forEach(function(id, idx) {
+    regelIDs[idx] = "ID "+ id
+  });
+  //   
+
+  //   console.log(regelIDs)
+  // })    
+  console.log(regelIDs)
+  draggableListe.forEach(element => {
+    regelID = element.querySelector('.dnd_id').innerHTML
+    if(regelIDs.includes(regelID))
+      containerListe[0].append(element)
+  })
+}
+
 /** 
  * fügt zu jeden draggable element die eventlistener dragstart und dragend hinzu
  * wenn das element verschoben wird, wird die class dragging hinzugefügt, 
@@ -9,7 +34,7 @@ const containerListe = document.querySelectorAll('.container') // Liste mit alle
 draggableListe.forEach(draggable => {
   draggable.addEventListener('dragstart', () => {
     draggable.classList.add('dragging')
-    draggable.querySelector('.Reihenfolgennummer').innerHTML = ""
+    draggable.querySelector('.dnd_reihenfolgennummer').innerHTML = ""
   }) 
   draggable.addEventListener('dragend', () => {
 
@@ -46,18 +71,14 @@ containerListe.forEach(container => {
 function ausgewählteRegelnSpeichern(){
   //go through all rules in the container and add only the necessary elements to a json
   var regeln = elementChildNodes(containerListe[0])
-  regelnJson = []
+  regelIDListe = []
   regeln.forEach(regel=>{
     var regelChildren = elementChildNodes(regel)
-    regelJson = {
-      "id": regelChildren[1].innerHTML,
-      "name": regelChildren[2].innerHTML,
-      "code": regelChildren[3].innerHTML,
-    }
-    regelnJson.push(regelJson)
+    var id = regelChildren[1].innerHTML.replace("ID ","");
+    regelIDListe.push(id)
+    
   })
-  
-  $("#id_regeln").val(JSON.stringify(regelnJson));
+  $("#id_regeln").val(regelIDListe);
 }
 
 
@@ -70,7 +91,7 @@ function elementeNummerieren(){
     children = elementChildNodes(container)
     counter = 1;
     children.forEach(element => {
-      element.querySelector('.Reihenfolgennummer').innerHTML=counter;
+      element.querySelector('.dnd_reihenfolgennummer').innerHTML=counter;
       counter++;
     })
   })

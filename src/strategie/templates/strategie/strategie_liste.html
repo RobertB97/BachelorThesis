@@ -1,31 +1,38 @@
-{% extends 'base.html' %}
-
-{% block titel %}
-  Strategien Liste
+{%extends 'base.html' %}
+{% block titel %}TechTrader | Strategien{%endblock%}
+    
+{%block style%}
+  {% load static%}
+  <link rel="stylesheet" href="{% static 'style.css' %}" defer>
 {%endblock%}
 
-{% block content %}
-<h1>Strategien</h1>
-<table>
-    <tr>
-      <th>Name</th>
-      <th>Beschreibung</th>
-    </tr>
-{% for strategie in object_list%}
-<tr>
-    <td><a href='{{strategie.get_absolute_url}}'>{{strategie.name}}</a></td>
-    <td>{{strategie.beschreibung}}</td>
-</tr>
-{%endfor%}
-</table>   
- 
-<form action="./erstellen/">
-    <input type="submit" value="Neue Strategie" />
-</form>
+{%block content%}
 
-<div>
-    {% include 'zurück.html' with link="/../" %}
-</div>
-{% endblock %}
 
-   
+    <article>
+        <h1>Strategien</h1>
+        <p>Platzhalter</p>
+        <form action="./hinzufuegen/">
+          <input id="btnadd" type="submit" value="+ Strategie hinzufügen" />
+        </form>
+        <table>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Beschreibung</th>
+            </tr>
+            {% for strategie in object_list%}
+            <tr> 
+                <td>{{strategie.id}}</td>
+                <td><a href="{% url 'strategie:strategie-details' id=strategie.id %}">{{strategie.name}}</a></td>
+                <td>{{strategie.beschreibung}}</td>
+            </tr>
+          {%endfor%}
+        </table>
+
+
+        
+    </article>
+    
+
+{%endblock%}

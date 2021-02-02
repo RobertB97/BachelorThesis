@@ -10,7 +10,7 @@ class Regel(models.Model):
     code = models.TextField()
 
     def get_absolute_url(self):
-        return reverse("regel:regel-detail", kwargs={"id": self.id})
+        return reverse("regel:regel-details", kwargs={"id": self.id})
     
 
 

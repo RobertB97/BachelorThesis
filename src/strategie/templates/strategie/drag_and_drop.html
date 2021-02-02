@@ -7,13 +7,12 @@
 
     {% for regel in regeln %}
     
-    <div class="draggable" draggable="true">
-        <span class="Reihenfolgennummer">{{forloop.counter}}</span> 
-        <span class="Id">{{regel.id}}</span>
-        <span class="Name">{{regel.name}}</span>
-        <span class="Code" hidden>{{regel.code}}</span>
-    </div>
+     <div class="draggable" draggable="true">
+            <span class="dnd_reihenfolgennummer">{{forloop.counter}}.</span> 
+            <span class="dnd_id">ID {{regel.id}}</span>
+            <span class="dnd_name">Name {{regel.name}}</span>
+            <span class="dnd_code" hidden>{{regel.code}}</span>
+    </div> 
     {%endfor%}
 
-    
 </section>

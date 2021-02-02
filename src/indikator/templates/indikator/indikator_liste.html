@@ -1,31 +1,34 @@
-{% extends 'base.html' %}
-
-{% block titel %}
-  Indikatoren Liste
+{%extends 'base.html' %}
+{% block titel %}TechTrader | Indikatoren{%endblock%}
+    
+{%block style%}
+  {% load static%}
+  <link rel="stylesheet" href="{% static 'style.css' %}" defer>
 {%endblock%}
 
-{% block content %}
-  <h1>Indikatoren</h1>
-  <table>
-      <tr>
-          <th>Name</th>
-          <th>Beschreibung</th>
-      </tr>
-      {% for indikator in object_list%}
-        <tr>
-            <td><a href='{{indikator.get_absolute_url}}'>{{indikator.name}}</a></td>
-            <td>{{indikator.beschreibung}}</td>
-        </tr>
-      {%endfor%}
-  </table>   
+{%block content%}
 
-  <form action="./erstellen/">
-      <input type="submit" value="Neuer Indikator" />
-  </form>
 
-  <div>
-      {% include 'zurück.html' with link="/../" %}
-  </div>
-{% endblock %}
+    <article>
+        <h1>Indikatoren</h1>
+        <p>Platzhalter</p>
+        <form action="./hinzufuegen/">
+          <input id="btnadd" type="submit" value="+ Indikator hinzufügen" />
+        </form>
+        <table>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Beschreibung</th>
+            </tr>
+            {% for indikator in object_list%}
+            <tr> 
+                <td>{{indikator.id}}</td>
+                <td><a href="{% url 'indikator:indikator-details' id=indikator.id %}">{{indikator.name}}</a></td>
+                <td>{{indikator.beschreibung}}</td>
+            </tr>
+          {%endfor%}
+        </table>
+    </article>
 
-   
+{%endblock%}

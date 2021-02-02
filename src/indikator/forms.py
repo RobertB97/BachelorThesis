@@ -8,9 +8,9 @@ class IndikatorModelForm(forms.ModelForm):
         model = Indikator
         fields = ('name','beschreibung','code')        
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'john'}),
-            'beschreibung': forms.Textarea(attrs={'class':'form-control'}),
-            'code': forms.Textarea(attrs={'class':'johnny'}),
+            'name': forms.TextInput(attrs={'class': 'inputname'}),
+            'beschreibung': forms.Textarea(attrs={'class':'beschreibung','cols':"50",'rows':"4"}),
+            'code': forms.Textarea(attrs={'class':'code'}),
         }
 
     

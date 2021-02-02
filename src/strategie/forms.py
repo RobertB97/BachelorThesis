@@ -18,15 +18,12 @@ class StrategieModelForm(forms.ModelForm):
       
         ]
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'beschreibung': forms.Textarea(attrs={'class':'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'inputname'}),
+            'beschreibung': forms.Textarea(attrs={'class':'beschreibung','cols':"50",'rows':"4"}),
             'regeln': forms.HiddenInput
         }
+
     
-    def clean(self):
-        regelDaten = self.cleaned_data['regeln']
-        regelDaten = regelDaten[1:-1]
-        self.cleaned_data['regeln'] = regelDaten
-        print(self.cleaned_data)
+
 
    

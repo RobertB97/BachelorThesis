@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
 
-    '04adfbd5e1d7.ngrok.io',
+    '9fd79c022a59.ngrok.io',
     '127.0.0.1'
      # add ngrok link here, in case of non-local showcase
 ]
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+
 
     #third party
     'bokeh',
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
+    
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -67,9 +69,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'trading.urls'
+
+
 
 TEMPLATES = [
     {

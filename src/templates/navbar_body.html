@@ -1,28 +1,9 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">HSMA TechTrader</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item {% if request.path == '/' %} active {%endif%}">
-          <a class="nav-link" href='/../'>Startseite <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item {% if request.path == '/simulationen/' %} active {%endif%}">
-          <a class="nav-link" href="/simulationen/">Simulationen</a>
-        </li>
-        <li class="nav-item {% if request.path == '/strategien/' %} active {%endif%}">
-          <a class="nav-link" href="/strategien/">Strategien</a>
-        </li>
-        <li class="nav-item {% if request.path == '/regeln/' %} active {%endif%}">
-            <a class="nav-link" href="/regeln/">Regeln</a>
-          </li>
-          <li class="nav-item {% if request.path == '/indikatoren/' %} active {%endif%}">
-            <a class="nav-link" href="/indikatoren/">Indikatoren</a>
-          </li>
-          
+  <nav>
+      <ul>
+          <li id="logo"><a href="/..">TechTrader</a></li>
+          <li class="menuitem"><a href="/indikatoren/" {% if request.path == '/indikatoren/' %} class='active' {%endif%}>Indikatoren</a></li>
+          <li class="menuitem"><a href="/regeln/" {% if request.path == '/regeln/' %} class='active' {%endif%}>Regeln</a></li>
+          <li class="menuitem"><a href="/strategien/" {% if request.path == '/strategien/' %} class='active' {%endif%}>Strategien</a></li>
+          <li class="menuitem" ><a href="/simulationen/" {% if request.path == '/simulationen/' %} class='active' {%endif%}>Simulationen</a></li>
       </ul>
-      
-    </div>
   </nav>

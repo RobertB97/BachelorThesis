@@ -11,9 +11,9 @@ class RegelModelForm(forms.ModelForm):
             "code",
         ]
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'beschreibung': forms.Textarea(attrs={'class':'form-control'}),
-            'code': forms.Textarea(attrs={'class':'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'inputname'}),
+            'beschreibung': forms.Textarea(attrs={'class':'beschreibung','cols':"50",'rows':"4"}),
+            'code': forms.Textarea(attrs={'class':'code'}),
         }
 
     def clean(self):

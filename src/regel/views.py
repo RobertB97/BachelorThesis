@@ -8,55 +8,106 @@ from django.views.generic import (
     DeleteView
 )
 
-# views.py is responsible for the logic of the User Interface
-# all the input data is currently being stored in the django-db but will be replaced with mr. galm's influxdb 
-
-
 from .forms import RegelModelForm
 from .models import Regel
+import requests
+from requests.exceptions import ConnectionError
+from django.http import HttpResponse, JsonResponse
+import json
 
-class RegelErstellenView(CreateView):
-    
-    template_name = 'regel/regel_erstellen.html'
+
+fehler_message = "Hoppla, da ist wohl etwas schiefgelaufen"
+
+class RegelHinzufuegenView(CreateView):   
+    template_name = 'regel/regel_hinzufuegen.html'
     form_class = RegelModelForm
-    queryset = Regel.objects.all()
     success_url = '/regeln/' 
-
+    #queryset = Indikator.objects.all() # ohne api
+    
     def form_valid(self, form):
-        return super().form_valid(form)    
-            
-
+        temp = versuche_request(self,form,"POST",None)
+        if(temp==500):
+            return HttpResponse(fehler_message)
+        if(temp==200):
+            return super().form_valid(form) 
+        
 class RegelListeView(ListView):
-    template_name = 'regel/regel_liste.html'  # with this command we can set a new path to our templates
-    queryset = Regel.objects.all() # since its a ListView, Django will look for template <blog>/<modelname>_list.html
+    template_name = 'regel/regel_liste.html'
+    
+    def get_queryset(self):
+        temp = versuche_request(self, None,"GET",None)
+        if(temp==500):
+            return {}
+        return temp
 
 class RegelDetailView(DetailView):
     template_name = 'regel/regel_detail.html' 
-    #queryset = Article.objects.all() can be used for filtering the querried objects
 
     def get_object(self):
         id_ = self.kwargs.get("id")
-        return get_object_or_404(Regel, id=id_)
+        antwort = versuche_request(self,None,"GET",id_)
+        return antwort
 
 class RegelBearbeitenView(UpdateView):
     template_name = 'regel/regel_bearbeiten.html'  
     form_class = RegelModelForm
-    queryset = Regel.objects.all()
     
     def get_object(self):
         id_ = self.kwargs.get("id")
-        return get_object_or_404(Regel, id=id_)
+        temp = versuche_request(self,None,"GET",id_)
+        if(temp == 500):
+            return HttpResponse(fehler_message)
+        return temp
 
     def form_valid(self, form):
-        return super().form_valid(form)
+        id_ = self.kwargs.get("id")
+        temp = versuche_request(self,form,"PUT",id_)
+        if(temp==500):
+            return HttpResponse(fehler_message)    
+        if(temp==200):
+            return super().form_valid(form) 
 
 class RegelEntfernenView(DeleteView):
     template_name = 'regel/regel_entfernen.html' 
-    #queryset = Article.objects.all() can be used for filtering the querried objects
     
     def get_object(self):
         id_ = self.kwargs.get("id")
-        return get_object_or_404(Regel, id=id_)
+        temp = versuche_request(self,None,"GET",id_)
+        if(temp == 500):
+            return HttpResponse(fehler_message)
+        return temp
 
     def get_success_url(self):
         return reverse('regel:regel-liste')
+
+def versuche_request(outerself, form, http_methode, id):
+    url = 'http://localhost:8001/regeln/'
+    if(id != None):
+        url = url + str(id)+"/"
+    if(form!=None):
+        daten=form.cleaned_data
+    try:
+        if(http_methode=="GET"):
+            queryset = requests.get(url)
+            if(id == None):
+                queryset = queryset.json()
+                return queryset
+        if(http_methode=="POST"):
+            queryset = requests.post(url, data=daten)
+        if(http_methode=="PUT"):
+            queryset = requests.put(url, data=daten)
+            print(queryset.json())
+        if(http_methode=="DELETE"):
+            url = 'http://localhost:8001/regeln/entfernen/'+ str(id)+"/"
+            queryset = requests.get(url)
+        
+    except ConnectionError as e:
+        return 500
+    if(id !=None and http_methode=="GET"):
+        jsonObjekt = json.loads(queryset.text)
+        objektFuerDarstellung = Regel()
+        for key in jsonObjekt.keys(): 
+            if key in dir(objektFuerDarstellung):
+                setattr(objektFuerDarstellung,key,jsonObjekt[key])
+        return objektFuerDarstellung
+    return 200

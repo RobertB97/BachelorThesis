@@ -1,6 +1,6 @@
 from django.urls import path
 from simulation.views import (
-    SimulationErstellenView,
+    SimulationHinzufuegenView,
     SimulationErgebnisView,
     SimulationListeView,
     SimulationBearbeitenView,
@@ -10,7 +10,7 @@ from simulation.views import (
 
 app_name = 'simulation'
 urlpatterns = [
-    path('erstellen/', SimulationErstellenView.as_view(), name="simulation-erstellen"),
+    path('hinzufuegen/', SimulationHinzufuegenView.as_view(), name="simulation-hinzufuegen"),
     path('ergebnis/', SimulationErgebnisView.as_view(), name="simulation-ergebnis"),
    # path('test/', views.starter, name="starter")
     path('', SimulationListeView.as_view(), name='simulation-liste'),

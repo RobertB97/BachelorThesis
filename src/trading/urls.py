@@ -24,6 +24,7 @@ urlpatterns = [
     path('strategien/', include('strategie.urls'), name="strategien-app"),
     path('regeln/', include('regel.urls'), name="regeln-app"),
     path('indikatoren/', include('indikator.urls'), name="indikatoren-app"),
-    path('', TemplateView.as_view(template_name="startseite.html"), name="main-view"),
+    path('', TemplateView.as_view(template_name="startseite_neu.html"), name="main-view"),
+    path('about/', TemplateView.as_view(template_name="about.html"), name="about"),
 ]
 
