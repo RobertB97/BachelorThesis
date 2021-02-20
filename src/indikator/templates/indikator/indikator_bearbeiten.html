@@ -5,20 +5,17 @@
 {%endblock%}
 
 {% block content %}
-
     <article>
-        <h1><a href="../"><span><svg width="34" height="28" viewBox="0 0 34 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M32.4029 12.3341H4.48634L14.5769 2.2435C15.0905 1.72988 15.0905 0.898263 14.5769 0.384648C14.0637 -0.128216 13.2321 -0.128216 12.7188 0.384648L0.38493 12.7189C-0.12831 13.2322 -0.12831 14.0642 0.38493 14.5774L12.7188 26.9117C12.9756 27.1681 13.3117 27.2965 13.6481 27.2965C13.9841 27.2965 14.3209 27.1681 14.5769 26.9117C15.0905 26.3984 15.0905 25.5664 14.5769 25.0532L4.48634 14.9622H32.4029C33.1286 14.9622 33.717 14.3739 33.717 13.6482C33.717 12.9224 33.1286 12.3341 32.4029 12.3341Z" fill="white"/>
-            </svg>
-            </span></a><br/>ID# {{object.id}} bearbeiten</h1>
-        
+        <h1>
+            {% include 'zurueck_pfeil.html'%}
+            ID# {{object.id}} bearbeiten
+        </h1>
 
         <form action="." method="post"> {% csrf_token %}
-            {{form.as_p}}  
-            <input id="submit" type='submit' value="Speichern">
-        </form>
-
+            {{form.media}}  
+            {{form}}
+        <input id="submit" type='submit' value="Speichern">
+      </form>
     </article>
 {% endblock %}
-
 

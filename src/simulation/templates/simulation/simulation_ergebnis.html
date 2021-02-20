@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+
 {% block titel %}TechTrader | Simulation Ergebnis{%endblock%}
 
 {% block skripte %}
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="  crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-2.2.3.min.js"></script>
     <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.2.3.min.js"></script>
     <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.2.3.min.js"></script>
@@ -9,25 +11,107 @@
     {{script|safe}}
 {% endblock %}
 
-
-
-{% block content %}
+{% block content %}            
     <article>
-            <h1><a href="../"><span><svg width="34" height="28" viewBox="0 0 34 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M32.4029 12.3341H4.48634L14.5769 2.2435C15.0905 1.72988 15.0905 0.898263 14.5769 0.384648C14.0637 -0.128216 13.2321 -0.128216 12.7188 0.384648L0.38493 12.7189C-0.12831 13.2322 -0.12831 14.0642 0.38493 14.5774L12.7188 26.9117C12.9756 27.1681 13.3117 27.2965 13.6481 27.2965C13.9841 27.2965 14.3209 27.1681 14.5769 26.9117C15.0905 26.3984 15.0905 25.5664 14.5769 25.0532L4.48634 14.9622H32.4029C33.1286 14.9622 33.717 14.3739 33.717 13.6482C33.717 12.9224 33.1286 12.3341 32.4029 12.3341Z" fill="white"/>
-                </svg>
-                </span></a><br/><span id="headline1span">ID# {{object.id}}</span>Simulation "{{object.name}}"</h1>
-                {{div|safe}}
-                <form action="./bearbeiten/">
-                    <input id="submit"  type="submit" value="Bearbeiten" />
-                </form>
-                <form action="./entfernen/">
-                    <input id="formzurueck"  type="submit" value="Entfernen" />
-                </form> 
-        </article>
+        <h1>
+            {% include 'zurueck_pfeil.html'%}
+            {% for item in daten%}
+                Simulation für ISIN: {{item.ISIN}}
+            {% endfor %}
+        </h1>
+        <div id="statistikdate">
+            <div class="blocktext">
+                <span class="labelspan">Zeitraum von:</span>
+                <span id="von_datum"></span>
+            </div>
+            
+            <div class="blocktext">
+                <span class="labelspan">Zeitraum bis:</span>
+                <span id="bis_datum"></span>
+            </div>
+        </div>
 
+        <div id="statistik">
+            {{div|safe}}
+        </div>
 
-    
+        <div id="statefields">
 
+            <div class="statecounter">
+                <span class="yellowcount">35</span>
+                <span class="countdescription">Käufe</span>
+            </div>
+
+            <div class="statecounter">
+                <span class="yellowcount">33</span>
+                <span class="countdescription">Verkäufe</span>
+            </div>
+
+            <div class="statecounter">
+                <span class="yellowcount">29</span>
+                <span class="countdescription">Gewinn-Trades</span>
+            </div>
+
+            <div class="statecounter">
+                <span class="yellowcount">4</span>
+                <span class="countdescription">Verlust-Trades</span>
+            </div>
+
+            <div class="statecounter">
+                <span class="yellowcount">-6,86%</span>
+                <span class="countdescription">Drawdown</span>
+            </div>
+            <div class="statecounter">
+                <span class="yellowcount">58.977</span>
+                <span class="countdescription">Max. Gewinn</span>
+            </div>
+
+            <div class="statecounter">
+                <span class="yellowcount">1221</span>
+                <span class="countdescription">Max. Verlust</span>
+            </div>
+
+            <div class="statecounter">
+                <span class="yellowcount">+17%</span>
+                <span class="countdescription">Ø-Performance pro Monat</span>
+            </div>
+
+            <div class="statecounter">
+                <span class="yellowcount">+133%</span>
+                <span class="countdescription">Ø-Performance pro Jahr</span>
+            </div>
+
+            <div class="statecounter">
+                <span class="yellowcount">+516%</span>
+                <span class="countdescription">Gesamt-Performance</span>
+            </div>
+        </div>
+
+        <div class="endbuttons">
+            <form action="../reconfig/">
+                <input id="submit"  type="submit" value="Bearbeiten" />
+            </form>
+        </div>       
+    </article>
+
+    <script>
+        $(document).ready( function () {
+            datumKorrigieren()
+            
+        });
+
+        function datumKorrigieren(){
+            var daten = {0:"{{daten.first.von_datum}}",1:"{{daten.first.bis_datum}}"}
+            var elemente = {0:$("#von_datum"),1:$("#bis_datum")}
+            for(i=0;i<2;i++){
+                datum=daten[i]
+                element=elemente[i]
+                datum = datum.split(/[%-]+/)
+                datum.reverse()
+                datum_komplett = datum.join(".")
+                element.text(datum_komplett.slice(0,-1))
+            }
+        }
+    </script>
 {% endblock %}    
 

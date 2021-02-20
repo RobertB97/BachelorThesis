@@ -1,48 +1,19 @@
-<!doctype html>
-<html lang="de">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    {% load static %}
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="jquery-3.5.1.min.js"></script>
-    <script language="javascript" type="text/javascript" src="script.js"></script>
-    <title>TechTrader | Über das Projekt</title>
-  </head>
-  <body>
-    <header>
-        <nav>
-            <ul>
-                <li id="logo"><a href="/..">TechTrader</a></li>
-                <li class="menuitem"><a href="/indikatoren/">Indikatoren</a></li>
-                <li class="menuitem"><a href="/regeln/">Regeln</a></li>
-                <li class="menuitem"><a href="/strategien/">Strategien</a></li>
-                <li class="menuitem"><a href="/simulationen/">Simulationen</a></li>
-            </ul>
-        </nav>
-    </header>
-    <article>
-        <h1>Über das Projekt</h1>
-        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
-        et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. 
-        Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
-        consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-        sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea 
-        takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   
-        Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at 
-        vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. 
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.   
-        Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. 
-        Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla 
-        facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.   
-        Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer</p>
-    </article>
-  </body>
-</html>
+{%extends 'base.html' %}
+{% block titel %}TechTrader | Über das Projekt{%endblock%}
+
+{%block content%}
+  <article>
+  <h1>Über das Projekt</h1>
+  <p class="allgemeine_beschreibung">Das Hauptziel dieses Projekts ist es, eine Art Testumgebung für technische
+    Handelsstrategien bereitzustellen.
+    Mit Hilfe der historischen Aktiendaten aus den letzten zwanzig Jahren kann eine lange Reihe von
+    Szenarien nachgebildet und getestet werden. Die Simulation wird nicht nur die Erfolgsrate messen,
+    sondern auch eine breite Palette von statistischen Daten liefern, die helfen können, die Strategie
+    zu verbessern. Ein Hauptmerkmal dieses Produkts ist die vollständige Anpassbarkeit jedes Elements
+    einer Strategie. Verhaltensregeln und sogar technische Indikatoren können individuell erstellt und an
+    die eigenen Bedürfnisse angepasst werden, und keine Sorge, die wichtigsten Indikatoren werden bereits für jeden
+    Benutzer bereitgestellt.
+
+  </p>
+</article>
+{%endblock%}

@@ -1,0 +1,46 @@
+{%extends 'base.html' %}
+
+{% block titel %}TechTrader | Profildetails{%endblock%}
+
+{%load static%} 
+
+{%block skripte%}
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="  crossorigin="anonymous"></script>
+    <script src="{% static 'dropdown.js' %}" defer></script> 
+{% endblock %} 
+
+{%block content%}
+    <article class="homewrap">
+        <h1>
+            Profildetails  
+        </h1>
+        
+        
+        <span class="labelspan">Nutzername:</span>
+        <p>{{daten.username}}</p>
+        <span class="labelspan">E-Mail:</span>
+        <p>{{daten.email}}</p>
+        <span class="labelspan">Beitrittsdatum:</span>
+        <p> {{daten.date_joined}}</p>
+        <span class="labelspan">Letzte Anmeldung:</span>
+        <p> {{daten.last_login}}</p>
+        {% if daten.is_staff == True or daten.is_admin == True or daten.is_superuser == True%}
+        <span class="labelspan">Rollen:</span>
+        <ul> 
+        {% if daten.is_staff == True %}
+                <li class="account"> Mitarbeiter </li>
+        {%endif%}
+        {% if daten.is_admin == True %}
+                <li class="account"> Admin </li>
+        {%endif%}
+        {% if daten.is_superuser == True %}
+                <li class="account"> Superuser </li>
+        {%endif%}
+        </ul>
+        {%endif%}
+        <form action="./bearbeiten/">
+            <input id="submit"  type="submit" value="Bearbeiten" />
+        </form>
+
+    </article>
+{% endblock %} 

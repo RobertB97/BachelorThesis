@@ -1,30 +1,41 @@
-"""trading URL Configuration
+from account.views import (
+    registration_view,
+    logout_view,
+    login_view,
+    account_view,
+    account_edit_view,
+)
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/2.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 from django.views.generic import TemplateView
 
-
 urlpatterns = [
+    #Adminseite, Zugang nur mit superuser
     path('admin/', admin.site.urls),
+
+    #Allgemein zugängliche Seiten
+    path('home/', TemplateView.as_view(template_name="home.html"), name="home-view"),
+    path('about/', TemplateView.as_view(template_name="about.html"), name="about"),
+
+    # Seiten für User Management
+    path('registrieren/', registration_view, name="registrierung-view"),
+    path('logout/', logout_view, name="logout-view"),
+    path('login/', login_view, name="login-view"),
+    path('profil/', account_view, name="profil-view"),
+    path('profil/bearbeiten/', account_edit_view, name="bearbeiten-view"),
+
+
+    #TechTrader Apps
     path('simulationen/', include('simulation.urls'), name="simulationen-app"),
     path('strategien/', include('strategie.urls'), name="strategien-app"),
     path('regeln/', include('regel.urls'), name="regeln-app"),
     path('indikatoren/', include('indikator.urls'), name="indikatoren-app"),
-    path('', TemplateView.as_view(template_name="startseite_neu.html"), name="main-view"),
-    path('about/', TemplateView.as_view(template_name="about.html"), name="about"),
-]
+    
+    # für tests von ckeditor
+    path('ckeditor/', include('ckeditor_uploader.urls')), 
 
+    
+]

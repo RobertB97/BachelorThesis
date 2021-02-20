@@ -1,0 +1,22 @@
+{% comment %}
+    Skript für das animierte Verstecken und Zeigen der seitl. Menüleise 
+    zusätzlich wird das Logo versteckt/aufgedeckt, da sonst bei der Hauptanimation visuelle "Unreinheiten" entstehen: 
+    Man kann beim Zuklappen des Menüs das Logo längern sehen als benötigt 
+{% endcomment %}
+
+<script>
+
+$('.open-menu-btn').on('click', function(){
+  if($('body').hasClass('closed-menu')){
+    $('body').removeClass('closed-menu');
+    setTimeout(function() {
+        $('#logo').show();
+    }, 100);
+    
+  }else{  
+    $('body').addClass('closed-menu');
+    $('#logo').hide();
+  }
+});
+
+</script>

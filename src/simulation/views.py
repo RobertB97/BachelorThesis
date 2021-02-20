@@ -32,33 +32,41 @@ from django.http import HttpResponse, JsonResponse
 import json
 
 
-class SimulationHinzufuegenView(CreateView):
+class SimulationConfigView(CreateView):
     form_class = SimulationModelForm
-    template_name = 'simulation/simulation_hinzufuegen.html'
-    success_url = '/simulationen/' 
-
-    def form_valid(self, form):
-        return super().form_valid(form)    
+    # Simulation.objects.all().delete()
+    template_name = 'simulation/simulation_config.html'
+    success_url = '/simulationen/ergebnis' 
 
     def get_context_data(self, **kwargs):
+        # Simulation.objects.all().delete()
         context = super().get_context_data(**kwargs)
-        context['strategien'] = Strategie.objects.all()
-        return context
+        context['strategien'] = requests.get('http://localhost:8001/strategien/').json()
+        
+        return context 
+
+    def form_valid(self, form):
+        print(self.request.user)
+        form.cleaned_data['nutzername'] = self.request.user.username
+        queryset = requests.put('http://localhost:8001/simulationen/3/', data=form.cleaned_data)
+        # print(self.request.session['nutzername']) 
+        return super().form_valid(form)    
 
 
 class SimulationErgebnisView(View):
     template_name = 'simulation_ergebnis.html'
     
     def get(self,request):
-        data = pd.DataFrame(MSFT)[:50]
-        print(data.date)
+        simulationsDaten = Simulation.objects.all()
+        data = pd.DataFrame(MSFT)[:200]
+        # print(data.date)
         data["date"] = pd.to_datetime(data["date"])
         x = []
         y = []
-        for i in range(50):
+        for i in range(200):
             y.append(i)
             x.append(i+100)
-        print(y)
+        # print(y)
         data["date"] = y
 
         inc = data.close > data.open # if close bigger than open, store in inc to it can get green color
@@ -75,56 +83,40 @@ class SimulationErgebnisView(View):
         p.vbar(data.date[inc], w, data.open[inc], data.close[inc], fill_color="#11FF30", line_color="black")
         p.vbar(data.date[inc], w, data.open[inc], data.close[inc], fill_color="#11FF30", line_color="black") #vbar here has following attributes:
         # x: the x-coordinate, width, top-bar-value, bottom-bar-value, etc.
-        p.vbar(data.date[dec], w, data.open[dec], data.close[dec], fill_color="#FF0000", line_color="black")
+        p.vbar(data.date[dec], w, data.open[dec], data.close[dec], fill_color="#FF0000", line_color="black", hatch_color="red")
         p.line(y,x,line_color="orange", line_dash="4 4")
 
 
 
         script, div = components(p)
-        return render(request, 'simulation/simulation_ergebnis.html', {'script':script, 'div':div})
-
-class SimulationListeView(ListView):
-    template_name = 'simulation/simulation_liste.html'
-    def get_queryset(self):
-        temp = versuche_request(self, None,"GET",None)
-        if(temp==500):
-            return {}
-        return temp
+        return render(request, 'simulation/simulation_ergebnis.html', {'script':script, 'div':div,'daten':simulationsDaten})
 
 
-class SimulationBearbeitenView(UpdateView):
-    template_name = 'simulation/simulation_bearbeiten.html'  
+class SimulationReconfigView(UpdateView):
+    template_name = 'simulation/simulation_reconfig.html'  
     form_class = SimulationModelForm
     
     def get_object(self):
-        id_ = self.kwargs.get("id")
-        temp = versuche_request(self,None,"GET",id_)
-        if(temp == 500):
-            return HttpResponse(fehler_message)
-        return temp
+        return Simulation.objects.all().first()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        strategienJson = requests.get('http://localhost:8001/strategien/').json()
+        context['strategien'] = strategienJson
+        
+        idList = []
+        for object in strategienJson:
+            idList.append(object["id"])
+        context['strategien_ID_Liste'] = idList
+        return context     
+
 
     def form_valid(self, form):
-        id_ = self.kwargs.get("id")
-        temp = versuche_request(self,form,"PUT",id_)
-        if(temp==500):
-            return HttpResponse(fehler_message)    
-        if(temp==200):
-            return super().form_valid(form) 
+        form.cleaned_data['nutzername'] = self.request.session['nutzername']
 
-class SimulationEntfernenView(DeleteView):
-    template_name = 'simulation/simulation_entfernen.html' 
-    #queryset = Article.objects.all() can be used for filtering the querried objects
-    
-    
-    def get_object(self):
-        id_ = self.kwargs.get("id")
-        temp = versuche_request(self,None,"GET",id_)
-        if(temp == 500):
-            return HttpResponse(fehler_message)
-        return temp
+        queryset = requests.put('http://localhost:8001/simulationen/3/', data=form.cleaned_data)
+        return super().form_valid(form)    
 
-    def get_success_url(self):
-        return reverse('simulation:simulation-liste')
 
 
 def versuche_request(outerself, form, http_methode, id):

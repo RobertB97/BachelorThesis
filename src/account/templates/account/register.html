@@ -1,0 +1,24 @@
+{%extends 'base_ohne_menubar.html' %}
+
+{% block titel %}TechTrader | Registrierung{%endblock%}
+
+{%load static%} 
+
+{%block skripte%}
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="  crossorigin="anonymous"></script>
+{% endblock %} 
+
+{%block content%}
+    <article id="homewrap">
+
+        <h1>
+            TechTrader
+        </h1>
+        <form class="user-view"  action="." method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+    <input id="createAccount" type="submit" value="Konto anlegen" />
+    </form>
+    <a id="linklogin" href="{%url 'login-view' %}">Stattdessen anmelden</a>
+    </article>
+{%endblock%}

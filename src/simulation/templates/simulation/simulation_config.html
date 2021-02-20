@@ -1,0 +1,29 @@
+{%extends 'base.html' %}
+
+{% block titel %}TechTrader | Simulation konfigurieren{%endblock%}
+
+{%load static%} 
+
+{%block skripte%}
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="  crossorigin="anonymous"></script>
+    <script src="{% static 'dropdown.js' %}" defer></script> 
+{% endblock %} 
+
+{%block content%}
+    <article>
+        <h1>
+            Simulation konfigurieren  
+        </h1>
+        
+        <form action="." method="post" onsubmit="ausgewählteStrategieSpeichern()"> {% csrf_token %}
+            {{form.as_p}}  
+            <select id="addsimhead">
+            <option value="">Bitte wählen Sie eine Strategie aus.</option>
+            {% for strategie in strategien %}
+                <option value="{{strategie.id}}">{{strategie.id}} - {{strategie.name}} - {{strategie.beschreibung}}</option>
+            {%endfor%}
+            </select>
+            <input id="submit" type='submit' value="Simulieren">
+        </form>
+    </article>
+{%endblock%}

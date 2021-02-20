@@ -1,11 +1,18 @@
 const draggableListe = document.querySelectorAll('.draggable') // Liste mit allen verschiebbaren Elementen
 const containerListe = document.querySelectorAll('.container') // Liste mit allen Containern
-
+reminder1 = elementChildNodes(containerListe[0])[0]
+reminder2 = elementChildNodes(containerListe[1])[0]
 
 $(document).ready( function () {
-  console.log($("#id_regeln").val())
+  containerListe.forEach( container => {
+    if(elementChildNodes(container)[0].className == "reminderwennleer"){
+      elementChildNodes(container)[0].remove()
+    }
+  })
+  
   regelnLaden()
   elementeNummerieren()
+  pruefenObLeer()
 });
 
 function regelnLaden(){
@@ -13,12 +20,7 @@ function regelnLaden(){
 
   regelIDs.forEach(function(id, idx) {
     regelIDs[idx] = "ID "+ id
-  });
-  //   
-
-  //   console.log(regelIDs)
-  // })    
-  console.log(regelIDs)
+  }); 
   draggableListe.forEach(element => {
     regelID = element.querySelector('.dnd_id').innerHTML
     if(regelIDs.includes(regelID))
@@ -37,7 +39,7 @@ draggableListe.forEach(draggable => {
     draggable.querySelector('.dnd_reihenfolgennummer').innerHTML = ""
   }) 
   draggable.addEventListener('dragend', () => {
-
+    pruefenObLeer()
     draggable.classList.remove('dragging')
     
   }) 
@@ -54,12 +56,14 @@ containerListe.forEach(container => {
     e.preventDefault() // per default ist das verschieben nicht erlaubt und das mouse-icon wird verändert. Dieser Befehl verhindert dies
     const folgendesElement = naechstesElementNachDraggable(container, e.clientY)
     const draggable = document.querySelector('.dragging') //das element welches aktuell verschoben wird
+    
     if (folgendesElement == null) {
       container.appendChild(draggable)      
     } else {
       container.insertBefore(draggable, folgendesElement)
     }
     elementeNummerieren()
+    pruefenObLeer();
   })
 })
 
@@ -80,7 +84,33 @@ function ausgewählteRegelnSpeichern(){
   })
   $("#id_regeln").val(regelIDListe);
 }
+function pruefenObLeer(){
+  counter = 0;
+  containerListe.forEach(container => {
+    if(elementChildNodes(container).length == 0){
+      if(counter==0){
+        container.append(reminder1);
+      }else{
+        container.append(reminder2);
+      }
+      
+    }else{
+      if(elementChildNodes(container).length > 1 ){
+        elementChildNodes(container).forEach(element => {
+          if(element.className == "reminderwennleer"){
+            element.remove()
+          }
+        })
+      }
+      
+    }
+    counter++;
 
+
+
+  })
+}
+ 
 
 /**
  * @description
@@ -91,10 +121,13 @@ function elementeNummerieren(){
     children = elementChildNodes(container)
     counter = 1;
     children.forEach(element => {
-      element.querySelector('.dnd_reihenfolgennummer').innerHTML=counter;
+      if(element.className != "" && element.className != "reminderwennleer"){
+        element.querySelector('.dnd_reihenfolgennummer').innerHTML=counter;
+      }
       counter++;
     })
   })
+  
 }
 
 /**

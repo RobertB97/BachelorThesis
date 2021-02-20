@@ -1,18 +1,21 @@
-<!-- Können hier per include noch verbessern -->
-   
-<section class="container"> Verwendete Regeln
-    
+<label>Verwendete Regeln</label>
+<section class="container emptycontainer" > 
+<div class="reminderwennleer">
+    <p> Füge Regeln per Drag and Drop  hinzu.</p> 
+</div> 
 </section>
-<section class="container"> Verfügbare Regeln
+<label>Verfügbare Regeln</label>
 
+<section class="container"> 
+    <div class="reminderwennleer" >
+        <p >Keine Regeln vorhanden</p> 
+    </div> 
     {% for regel in regeln %}
-    
      <div class="draggable" draggable="true">
             <span class="dnd_reihenfolgennummer">{{forloop.counter}}.</span> 
             <span class="dnd_id">ID {{regel.id}}</span>
             <span class="dnd_name">Name {{regel.name}}</span>
-            <span class="dnd_code" hidden>{{regel.code}}</span>
+            <span class="dnd_code">{{regel.code}}</span>
     </div> 
     {%endfor%}
-
 </section>

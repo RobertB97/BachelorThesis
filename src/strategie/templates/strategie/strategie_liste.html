@@ -1,38 +1,51 @@
 {%extends 'base.html' %}
+
 {% block titel %}TechTrader | Strategien{%endblock%}
-    
-{%block style%}
-  {% load static%}
-  <link rel="stylesheet" href="{% static 'style.css' %}" defer>
+
+{%block skripte%}
+  <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="  crossorigin="anonymous"></script>
 {%endblock%}
 
 {%block content%}
+  <article>
+    <h1>Strategien</h1>
+    {% comment %} <p>Platzhalter</p> {% endcomment %}
 
+    <form action="./hinzufuegen/">
+      <input id="btnadd" type="submit" value="+ Strategie hinzufügen" />
+    </form>
 
-    <article>
-        <h1>Strategien</h1>
-        <p>Platzhalter</p>
-        <form action="./hinzufuegen/">
-          <input id="btnadd" type="submit" value="+ Strategie hinzufügen" />
-        </form>
-        <table>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Beschreibung</th>
-            </tr>
-            {% for strategie in object_list%}
-            <tr> 
-                <td>{{strategie.id}}</td>
-                <td><a href="{% url 'strategie:strategie-details' id=strategie.id %}">{{strategie.name}}</a></td>
-                <td>{{strategie.beschreibung}}</td>
-            </tr>
-          {%endfor%}
-        </table>
+    <table>
+      <colgroup>
+        <col span="1" style="width: 10%;">
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 65%;">
+      </colgroup>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Beschreibung</th>
+      </tr>
+      {% for strategie in object_list%}
+        <tr class='clickable-row' data-href="{% url 'strategie:strategie-details' id=strategie.id %}"> 
+          <td>{{strategie.id}}</td>
+          <td>{{strategie.name}}</td>
+          <td>{{strategie.beschreibung}}</td>
+        </tr>
+      {%endfor%}
+    </table>
+  </article>
 
-
-        
-    </article>
+  <script>
+    jQuery(document).ready(function($) {
+        $("table tr").hide();
+        $("table tr").each(function(index){
+          $(this).delay(index*100).show(500);
+        });
+      $(".clickable-row").click(function() {
+          window.location = $(this).data("href");
+      });
+    });
     
-
+  </script>
 {%endblock%}

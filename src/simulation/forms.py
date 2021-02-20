@@ -10,12 +10,17 @@ class SimulationModelForm(ModelForm):
 
     class Meta:
         model = Simulation
-        fields = ["name","strategie","von_datum","bis_datum"]
+        fields = ["ISIN","strategie","von_datum","bis_datum",'startkapital']
         widgets = {
             "von_datum" : forms.DateInput(attrs={"type": "date"}),
             "bis_datum" : forms.DateInput(attrs={"type": "date"}),
             "strategie" : forms.HiddenInput(),
         }
+        labels = {
+            "von_datum": "Start-Datum",
+            "bis_datum": "End-Datum"
+        }
+        
 
     def clean(self):
         #super(SimulationModelForm,self).clean()

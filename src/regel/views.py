@@ -14,6 +14,7 @@ import requests
 from requests.exceptions import ConnectionError
 from django.http import HttpResponse, JsonResponse
 import json
+from django.conf import settings
 
 
 fehler_message = "Hoppla, da ist wohl etwas schiefgelaufen"
@@ -22,9 +23,11 @@ class RegelHinzufuegenView(CreateView):
     template_name = 'regel/regel_hinzufuegen.html'
     form_class = RegelModelForm
     success_url = '/regeln/' 
-    #queryset = Indikator.objects.all() # ohne api
-    
+
     def form_valid(self, form):
+        #return generischer_request(true,self,form.cleaned_data,"POST"):
+        # queryset = requests.post(url, data=daten).json()
+        form.cleaned_data['nutzername'] = self.request.user.username
         temp = versuche_request(self,form,"POST",None)
         if(temp==500):
             return HttpResponse(fehler_message)
@@ -33,8 +36,9 @@ class RegelHinzufuegenView(CreateView):
         
 class RegelListeView(ListView):
     template_name = 'regel/regel_liste.html'
-    
+
     def get_queryset(self):
+        #return generischer_request(false,self,None,"POST"):
         temp = versuche_request(self, None,"GET",None)
         if(temp==500):
             return {}
@@ -44,6 +48,7 @@ class RegelDetailView(DetailView):
     template_name = 'regel/regel_detail.html' 
 
     def get_object(self):
+        #return generischer_request(true,self,None,"POST"):
         id_ = self.kwargs.get("id")
         antwort = versuche_request(self,None,"GET",id_)
         return antwort
@@ -53,14 +58,18 @@ class RegelBearbeitenView(UpdateView):
     form_class = RegelModelForm
     
     def get_object(self):
+        #return generischer_request(true,self,None,"POST"):
         id_ = self.kwargs.get("id")
+        
         temp = versuche_request(self,None,"GET",id_)
         if(temp == 500):
             return HttpResponse(fehler_message)
         return temp
 
     def form_valid(self, form):
+        #return generischer_request(true,self,form.cleaned_data,"PUT"):
         id_ = self.kwargs.get("id")
+        form.cleaned_data['nutzername'] = self.request.user.username
         temp = versuche_request(self,form,"PUT",id_)
         if(temp==500):
             return HttpResponse(fehler_message)    
@@ -69,8 +78,9 @@ class RegelBearbeitenView(UpdateView):
 
 class RegelEntfernenView(DeleteView):
     template_name = 'regel/regel_entfernen.html' 
-    
+
     def get_object(self):
+        #return generischer_request(true,self,None,"POST"):
         id_ = self.kwargs.get("id")
         temp = versuche_request(self,None,"GET",id_)
         if(temp == 500):
@@ -81,7 +91,8 @@ class RegelEntfernenView(DeleteView):
         return reverse('regel:regel-liste')
 
 def versuche_request(outerself, form, http_methode, id):
-    url = 'http://localhost:8001/regeln/'
+    url = settings.API_SERVER_URL + '/regeln/'
+    print(url)
     if(id != None):
         url = url + str(id)+"/"
     if(form!=None):
@@ -92,11 +103,10 @@ def versuche_request(outerself, form, http_methode, id):
             if(id == None):
                 queryset = queryset.json()
                 return queryset
-        if(http_methode=="POST"):
+        if(http_methode=="POST"): # POST wird beim erstellen und holen verwendet
             queryset = requests.post(url, data=daten)
-        if(http_methode=="PUT"):
+        if(http_methode=="PUT"): # PUT wird beim verändern und löschen verwendet
             queryset = requests.put(url, data=daten)
-            print(queryset.json())
         if(http_methode=="DELETE"):
             url = 'http://localhost:8001/regeln/entfernen/'+ str(id)+"/"
             queryset = requests.get(url)
@@ -111,3 +121,33 @@ def versuche_request(outerself, form, http_methode, id):
                 setattr(objektFuerDarstellung,key,jsonObjekt[key])
         return objektFuerDarstellung
     return 200
+
+    """
+    def generischer_request(brauchtID,outerself,daten,http_methode):
+        if(brauchtID): # Wenn Id gebraucht wird, wird sie geholt, ansonsten None gesetzt
+            id = self.kwargs.get("id")
+        else:
+            id = None,
+
+        daten = {
+            "id": id,
+            "nutzername": outerself.request.session['nutzername'],
+            "daten": daten
+        }
+        try:
+        if(http_methode == "POST"): # für List oder Detail
+            antwort = requests.post(url,daten)
+            if(id==None): 
+                # List ruft die Methode ohne ID auf, da alle Objekte gebraucht werden. 
+                # Die request-Antwort muss vorher in JSON umgewandelt werden um Daten korrekt darstellen zu können
+                return antwort.json()
+        if(http_methode == "PUT"): # für Update oder Delete, bei Delete ist Daten leer
+            antwort = requests.put(url,daten)
+        except ConnectionError as e:
+            if(id==None):
+                return {}
+            else:
+                return HttpResponse(fehler_message)
+        return antwort
+
+    """

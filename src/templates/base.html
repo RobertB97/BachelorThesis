@@ -1,20 +1,24 @@
 <!Doctype html>
-<!-- Base Struktur für jede HTML Seite-->
+{% comment %} Base Struktur für jede HTML Seite{% endcomment %}
 <html>
 <head>
-    <title>{% block titel %}{%endblock%}</title>
-    <!-- {% load static %}  probably not needed-->
-    {% include "navbar_head.html" %}
+    
+    <title>{% block titel %}{%endblock%}</title>{% comment %} Block für Tab titel{% endcomment %}
+    {% load static %}  {% comment %} Tag für das Laden von statischen Daten wie js oder css{% endcomment %}
+    {% include "menubar_head.html" %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 
-
-    {% block style %}{% endblock %} <!-- Block für CSS Style  -->
-    {% block skripte %}{% endblock %}  <!-- zusätzlichen Skripte -->
+    {% block style %}{% endblock %} {% comment %} Block für weitere CSS Style  {% endcomment %}
+    {% block skripte %}{% endblock %}  {% comment %} zusätzlichen Skripte {% endcomment %}
 </head>
 <body>
-<header>
-    {% include "navbar_body.html" %}
-</header>
-    {% block content %}{% endblock %} <!-- allg. Block für HTML   -->
+    {% include "menubar_body.html" %}
+        
+    <div class="content-wrapper">
+        {% block content %}{% endblock %}
+    </div>
 
+
+    {% include "menubar_skript.html" %}
 </body>
 </html>

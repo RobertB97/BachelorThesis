@@ -6,7 +6,7 @@ from indikator.views import (
     IndikatorBearbeitenView,
     IndikatorEntfernenView,
     IndikatorGraphView,
-)
+    )
 
 
 app_name = 'indikator'

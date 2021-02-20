@@ -1,0 +1,26 @@
+{%extends 'base.html' %}
+
+{% block titel %}TechTrader | Profildetails{%endblock%}
+
+{%load static%} 
+
+{%block skripte%}
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="  crossorigin="anonymous"></script>
+    <script src="{% static 'dropdown.js' %}" defer></script> 
+{% endblock %} 
+
+{%block content%}
+    <article class="homewrap">
+        {% include 'zurueck_pfeil.html'%}
+        <h1>
+            Profildetails  
+        </h1>
+        
+        
+        <form action="." method="post"> {% csrf_token %}
+            {{form.as_p}}  
+            <input id="submit" type='submit' value="Speichern">
+        </form>
+
+    </article>
+{% endblock %} 

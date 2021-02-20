@@ -1,0 +1,22 @@
+<!Doctype html>
+{% comment %}Base Struktur für Login/Registrierungs Seiten ohne menubar{% endcomment %}
+<html>
+<head>
+    
+    <title>{% block titel %}{%endblock%}</title> 
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'style.css' %}">  {% comment %} Main-CSS {% endcomment %}
+
+    {% block style %}{% endblock %} {% comment %}Block für weitere CSS Style  {% endcomment %}
+    {% block skripte %}{% endblock %}  {% comment %}zusätzlichen Skripte {% endcomment %}
+</head>
+<body>
+
+    {% block content %}{% endblock %}  {% comment %}Inhalt {% endcomment %}
+
+
+
+
+    {% include "menubar_skript.html" %}
+</body>
+</html>

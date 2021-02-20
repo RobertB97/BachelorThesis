@@ -33,7 +33,7 @@ class StrategieHinzufuegenView(CreateView):
         return context
 
     def form_valid(self, form):
-        print("hallo" , form.cleaned_data)
+        form.cleaned_data['nutzername'] = self.request.user.username
         temp = versuche_request(self,form,"POST",None)
         if(temp==500):
             return HttpResponse(fehler_message)
@@ -79,6 +79,7 @@ class StrategieBearbeitenView(UpdateView):
 
     def form_valid(self, form):
         id_ = self.kwargs.get("id")
+        form.cleaned_data['nutzername'] = self.request.user.username
         temp = versuche_request(self,form,"PUT",id_)
         if(temp==500):
             return HttpResponse(fehler_message)    

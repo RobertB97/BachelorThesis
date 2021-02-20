@@ -1,19 +1,14 @@
 from django.urls import path
 from simulation.views import (
-    SimulationHinzufuegenView,
+    SimulationConfigView,
     SimulationErgebnisView,
-    SimulationListeView,
-    SimulationBearbeitenView,
-    SimulationEntfernenView,
+    SimulationReconfigView,
 )
 
 
 app_name = 'simulation'
 urlpatterns = [
-    path('hinzufuegen/', SimulationHinzufuegenView.as_view(), name="simulation-hinzufuegen"),
+    path('', SimulationConfigView.as_view(), name="simulation-config"),
     path('ergebnis/', SimulationErgebnisView.as_view(), name="simulation-ergebnis"),
-   # path('test/', views.starter, name="starter")
-    path('', SimulationListeView.as_view(), name='simulation-liste'),
-    path('<int:id>/bearbeiten/', SimulationBearbeitenView.as_view(), name='simulation-update'),
-    path('<int:id>/entfernen/', SimulationEntfernenView.as_view(), name='simulation-entfernen'),
+    path('reconfig/', SimulationReconfigView.as_view(), name='simulation-reconfig'),
 ]

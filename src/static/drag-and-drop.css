@@ -3,21 +3,31 @@ body {
 }
 
 .container {
-  background-color: rgb(131, 131, 131);
-  padding: 1rem;
-  margin-top: 1rem;
+  color: #FFE600;
+  margin: 1rem 0;
+  border: 1px solid white;
+  border-radius: 20px;
+  background: #233443;
+  width: 800px;
+  padding: 10px;
 }
 
 .draggable {
   padding: 1rem;
-  background-color: rgb(56, 56, 56);
+  background-color: rgb(35 52 67);
   border: 1px solid black;
   cursor: move;
-  
+  border-radius: 20px;
+  color: white;
+  margin: 5px 0;
 }
 
 .draggable.dragging {
   opacity: 0.5;
 }
+
+.emptycontainer {
+  border:1px solid #FFE600 !important;
+  }
 
 
