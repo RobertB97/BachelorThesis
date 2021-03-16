@@ -18,8 +18,6 @@ class RegelListeView(listenViewMixin):
         Klasse der Ansicht für das Darstellen der Regeln in einer Liste.
         """  
     appName             = appName
-    model               = Regel
-    elementeBezeichnung = "regeln"
 
 class RegelHinzufuegenView(hinzufuegenViewMixin): 
     """

@@ -66,8 +66,6 @@ class StrategieListeView(listenViewMixin):
         """  
 
     appName             = appName
-    model               = Strategie
-    elementeBezeichnung = "strategien"
 
 class StrategieHinzufuegenView(hinzufuegenViewMixin):
     """

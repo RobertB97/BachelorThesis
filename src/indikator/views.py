@@ -43,8 +43,6 @@ class IndikatorListeView(listenViewMixin):
         """  
          
     appName             = appName
-    model               = Indikator
-    elementeBezeichnung = "indikatoren"
 
 class IndikatorHinzufuegenView(hinzufuegenViewMixin):  
     """

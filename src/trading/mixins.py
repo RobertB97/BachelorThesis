@@ -48,9 +48,7 @@ class listenViewMixin(ListView):
     Holt die entsprechenden Daten für die Listenansicht und wandelt sie in das benötigte Format.
     """
     template_name       = "modulViews/generisch_liste.html"
-    appName             = None
-    model               = None
-    elementeBezeichnung = None
+    appName             = None 
 
     def get_context_data(self, *args, **kwargs):
         """
@@ -87,7 +85,13 @@ class listenViewMixin(ListView):
         if(allgemeineFehlerPruefung(serverAntwort, request)):
             return redirect(reverse(self.appName + ":" + self.appName + "-fehler")) #appName:appName-fehler
         
-        self.queryset = serverAntwort[self.elementeBezeichnung]
+        elementeBezeichung = self.appName
+        if(appName == "indikator")
+            elementeBezeichung = elementeBezeichung + "en" # indikator + en
+        else:
+            elementeBezeichung = elementeBezeichung + "n" # regel + n und strategie + n
+
+        self.queryset = serverAntwort[elementeBezeichnung]
         return super().get(request, *args, **kwargs)
 
 class hinzufuegenViewMixin(CreateView):
