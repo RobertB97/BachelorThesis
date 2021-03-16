@@ -1,0 +1,22 @@
+<label>Verwendete Regeln</label>
+<section class = "container emptycontainer" > 
+    <div class = "reminderwennleer">
+        <p> Füge Regeln per Drag and Drop  hinzu.</p> 
+    </div> 
+</section>
+<label>Verfügbare Regeln</label>
+
+<section class = "container"> 
+    <div class = "reminderwennleer" >
+        <p >Keine Regeln vorhanden</p> 
+    </div> 
+    {% for regel in regeln %}
+    <div class = "draggable" draggable = "true">
+            <div class = "dnd_reihenfolgennummer">{{forloop.counter}}</div> 
+            <div class = "dnd_id">Regel-ID: {{regel.id}} </div> <br/>
+            <div class = "dnd_name">Name: {{regel.name}}</div>
+            <div class = "dnd_beschreibung">Beschreibung: {{regel.beschreibung}}</div>
+    </div> 
+     
+    {%endfor%}
+</section> 

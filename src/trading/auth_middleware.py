@@ -1,6 +1,4 @@
-import re
-
-from django.conf import settings
+from django.conf      import settings
 from django.shortcuts import redirect
 
 
@@ -25,10 +23,19 @@ class AngemeldetMiddleware:
         Nutzer auf eine Seite möchte, welche nicht in settings.AUTH_EXEMPT_ROUTES 
         enthalten ist, dann wird er User auf die Seite AUTH_LOGIN_ROUTE redirected 
         """ 
+        
         if not request.user.is_authenticated:
             exempts = settings.AUTH_EXEMPT_ROUTES
-            path = request.path_info.strip("/")
-            if(path not in str(exempts)): 
+            path    = request.path_info.strip("/")
+            
+            if(path not in str(exempts) or path == ""): 
                 return redirect("/login/")
-
+        else:
+            # Wenn kein Pfad angegeben wurde, auf home weiterleiten
+            if(request.path_info.strip("/") == ""):
+                return redirect("/home/")
+            # Wenn Zugriff auf Admin Panel versucht wird, nur erlaubt wenn Admin oder Supernutzer, sonst auf Home weiterleiten
+            if(request.path_info.strip("/") == "admin"):
+                if(not request.user.is_admin or not request.user.is_superuser):
+                   return redirect("/home/") 
         

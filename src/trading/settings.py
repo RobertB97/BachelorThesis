@@ -26,10 +26,8 @@ SECRET_KEY = 'h44n-^i48tjjo85glfd!-@nb9%+1#2^ll3kbvnadzi=08(fkny'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-
-    '57e5aa0ad85f.ngrok.io', # für ngrok
+    'f58d1812816a.ngrok.io', # für ngrok
     '127.0.0.1' 
-    
 ]
 
 
@@ -51,6 +49,7 @@ INSTALLED_APPS = [
     'jsonfield',
     'ckeditor', # Für Code Highlighter als TextEditor
     'ckeditor_uploader' , # Für Code Highlighter als TextEditor
+    
 
     # eigene Apps
     'account',
@@ -142,18 +141,21 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+AUTH_PASSWORD_VALIDATORS = [ # Djangos Passwort  Validierung deaktiviert und mit eigenem Validierer ersteztz
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
+    {   
+        'NAME': 'account.validation.CustomPasswordValidator', # eigener Validierer
     },
 ]
 
@@ -188,8 +190,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 
 #Wichtig für die Middleware
-AUTH_EXEMPT_ROUTES = ('registrieren', 'login', 'about') #Seiten die nicht betroffen sind von der Weiterleitung
-AUTH_LOGIN_ROUTE = 'login-view'
+AUTH_EXEMPT_ROUTES = ('registrieren','login','about') #Seiten die nicht betroffen sind von der Weiterleitung
+AUTH_LOGIN_ROUTE = 'login-view' #Seite auf die Weitergeleitet werden soll
 
-BACKEND_URL = "http://f4478b09b5e6.eu.ngrok.io/"
-API_SERVER_URL = 'http://localhost:8001'
+BACKEND_URL = "http://05edb0e3e8a6.eu.ngrok.io/" # Hier kommt der URL der API des Backends

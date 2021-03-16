@@ -5,18 +5,14 @@
     
     <title>{% block titel %}{%endblock%}</title> 
     {% load static %}  
-    <link rel="stylesheet" href="{% static 'style.css' %}">  {% comment %} Main-CSS {% endcomment %}
+    <link rel = "stylesheet" href = "{% static 'style.css' %}">  {% comment %} Main-CSS {% endcomment %}
 
-    {% block style %}{% endblock %} {% comment %}Block für weitere CSS Style  {% endcomment %}
-    {% block skripte %}{% endblock %}  {% comment %}zusätzlichen Skripte {% endcomment %}
+    {% block style %}{% comment %}Block für weitere CSS Style  {% endcomment %}{% endblock %} 
+    {% block skripte %}{% comment %}zusätzlichen Skripte {% endcomment %}{% endblock %}  
 </head>
 <body>
 
-    {% block content %}{% endblock %}  {% comment %}Inhalt {% endcomment %}
+    {% block content %}{% comment %}Inhalt {% endcomment %}{% endblock %}  
 
-
-
-
-    {% include "menubar_skript.html" %}
 </body>
 </html>

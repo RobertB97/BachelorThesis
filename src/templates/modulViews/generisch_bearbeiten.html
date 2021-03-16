@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block titel %}TechTrader | {{appName | title}} bearbeiten{%endblock%}
+
+{% block content %}
+    <article>
+        <h1>
+            {% include 'zurueck_pfeil.html'%}
+            ID# {{object.id}} bearbeiten
+        </h1>
+        
+        <form action = "." method = "post"> {% csrf_token %}
+            <label class = "labelspan">Name :</label>
+            {{form.name}}
+            <label class = "labelspan">Beschreibung :</label>
+            {{form.beschreibung}}
+            <label class = "labelspan">Code :</label>
+            {{form.berechnung_pseudo_code}}
+            {% if appName == "indikator" %}
+                {{form.eigene_skala}}
+                <label class = "labelspan">Eigene Skala verwenden?</label>
+                <input id = "submit" class = "nonefloat" type = 'submit' value = "Speichern">
+            {% else %}
+                <input id = "submit" type = 'submit' value = "Speichern">
+            {% endif %}
+            
+        </form>
+
+    </article>
+{% endblock %} 

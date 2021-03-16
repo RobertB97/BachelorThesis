@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Indikator
-# Register your models here.
+
+# Hier wird das Indikator model für den Admin Panel verfügbar. 
 
 admin.site.register(Indikator)

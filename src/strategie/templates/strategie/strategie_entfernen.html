@@ -2,6 +2,10 @@
 
 {% block titel %}TechTrader | Strategie entfernen{%endblock%}
 
+{%block skripte%}
+  <script src = "https://code.jquery.com/jquery-3.5.1.js" integrity = "sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="  crossorigin = "anonymous"></script>
+{%endblock%}
+
 {% block content %}
     <article>
         <h1>
@@ -9,28 +13,55 @@
             Sind Sie sicher, dass Sie die Strategie "{{object.name}}" entfernen möchten?
         </h1>
 
-        <span class="labelspan">Beschreibung</span>
+        <span class = "labelspan">Beschreibung</span>
         <p>{{object.beschreibung}}</p>
 
-        <span class="labelspan">Regeln</span>
-        <p>{{object.regeln}}</p>
+        <span class = "labelspan">Verwendete Regeln</span>
+        <p></p>
+        
+        <table>
+            <colgroup>
+                <col span = "1" style = "width: 7;">
+                <col span = "1" style = "width: 30%;">
+                <col span = "1" style = "width: 63%;">
+            </colgroup>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Beschreibung</th>
+            </tr>
+            {% for regel in verwendeteRegeln%}
+                {%if regel.benutzer_id == "superuser" %}
+                    <tr class = 'clickable-row' data-href = "{% url 'regel:regel-details' id = regel.id %}"> 
+                        <td class = "superuserdata">{{regel.id}}</td>
+                        <td class = "superuserdata">{{regel.name}}</td>
+                        <td class = "superuserdata">{{regel.beschreibung}}</td>
+                    </tr>
+                {%else%}
+                    <tr class = 'clickable-row' data-href = "{% url 'regel:regel-details' id = regel.id %}"> 
+                        <td>{{regel.id}}</td>
+                        <td>{{regel.name}}</td>
+                        <td>{{regel.beschreibung}}</td>
+                     </tr>
+                {%endif%}
+            {%endfor%}
+        </table>
 
-        <form action="http://127.0.0.1:8000/strategien/" method="get">
-            <input id="submit" onclick="httpGet()" type='submit' value='Ja' /> 
+
+        <form action = "." method = "POST">{%csrf_token%}
+            <input id="submit" type = 'submit' value = 'Ja' /> 
         </form>
 
-        <form action="/regeln/{{object.id}}">
-            <input id="formzurueck"  type="submit" value="Zurück" />
+        <form action = "/strategien/{{object.id}}/">
+            <input id = "formzurueck"  type = "submit" value = "Abbrechen" />
         </form>
     </article>
-
     <script>
-        function httpGet()
-        {   
-            var url = "http://127.0.0.1:8001/strategien/entfernen/"+{{object.id}}
-            var xmlHttp = new XMLHttpRequest();
-            xmlHttp.open( "GET", url, false );
-            xmlHttp.send( null );
-        }
+        jQuery(document).ready(function($) {
+            $(".clickable-row").click(function() {
+                window.location = $(this).data("href");
+            });
+        });
     </script>
+
 {% endblock %} 

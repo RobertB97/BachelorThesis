@@ -1,133 +1,145 @@
-from django.urls import reverse
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import (
-    CreateView,
-    ListView,
-    DetailView,  
-    UpdateView,
-    DeleteView
+# django imports
+from django.shortcuts import  redirect, reverse
+
+from trading.mixins import (
+    listenViewMixin,
+    hinzufuegenViewMixin,
+    detailViewMixin,
+    bearbeitenViewMixin,
+    entfernenViewMixin,
+    fehlerViewMixin,
+    allgemeineFehlerPruefung,
+    datenAnBackendSenden,
 )
-from .forms import StrategieModelForm
-from .models import Strategie
+# Regel app import
 from regel.models import Regel
 
-import requests
-from requests.exceptions import ConnectionError
-from django.http import HttpResponse, JsonResponse
-import json
+# Strategie app imports
+from .forms  import StrategieModelForm
+from .models import Strategie
 
-fehler_message = "Hoppla, da ist wohl etwas schiefgelaufen"
+appName           = "strategie"
 
-class StrategieHinzufuegenView(CreateView):
+class getContextMixin:
+    """
+        Klasse, welche die get_context_data Funktion zur verfügung stellt. Diese Funktion 
+        ist bei StrategieDetailView, StrategieBearbeitenView und StrategieEntfernenView identisch.
+
+    """
+    def get_context_data(self, *args, **kwargs):
+        """
+            Holt die Daten aller Regeln. Die Daten der verwendeten Regel werden in eine eigene Liste gespeichert.
+
+        """
     
-    template_name = 'strategie/strategie_hinzufuegen.html'
-    form_class = StrategieModelForm
-    success_url = '/strategien/' 
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)        
-        url = 'http://localhost:8001/regeln/'
+        context   = super().get_context_data(**kwargs)   
         
-        context['regeln'] = requests.get(url).json()
-        print(context)
+        # Daten an Backend senden.
+        serverAntwort = datenAnBackendSenden(
+            hauptPfad = "regel/", 
+            unterPfad = "getalle", 
+            daten     = {"benutzer_id": self.request.user.username}
+        )
+
+        # ServerAntwort auf Fehler prüfen. Bei gefundenen Fehler auf FehlerSeite leiten.
+        if(allgemeineFehlerPruefung(serverAntwort, self.request)):
+            return redirect(reverse("strategie:strategie-fehler"))
+        
+        verwendeteRegelListe = []
+
+        # Liste mit verwendeten Regeln erstellen.
+        for regel in serverAntwort["regeln"]:
+            if(regel["id"] in self.request.session["verwendete-regeln"]):
+                verwendeteRegelListe.append(regel)
+
+        # Alle Regeln im Context speichern
+        context["regeln"]           = serverAntwort["regeln"]
+        # Alle verwendeten Regeln im Context speichern
+        context["verwendeteRegeln"] = verwendeteRegelListe
+        # Den bearbeitbar-Wert in Context speichern. Wichtig für DetailAnsicht
+        context["bearbeitbar"]      = self.request.session["bearbeitbar"]
         return context
 
-    def form_valid(self, form):
-        form.cleaned_data['nutzername'] = self.request.user.username
-        temp = versuche_request(self,form,"POST",None)
-        if(temp==500):
-            return HttpResponse(fehler_message)
-        if(temp==200):
-            return super().form_valid(form) 
+class StrategieListeView(listenViewMixin):
+    """
+        Klasse für das Darstellen der Strategien in einer Liste.
+        """  
+
+    appName             = appName
+    model               = Strategie
+    elementeBezeichnung = "strategien"
+
+class StrategieHinzufuegenView(hinzufuegenViewMixin):
+    """
+        Klasse für das Erstellen/ Hinzufügen von neuen Strategien.
+
+        Methoden
+        ------
+        """   
+            
+    form_class    = StrategieModelForm
+    appName       = appName
+    model         = Strategie
+    neuErstellen  = True
+
+    def get(self, request, *args, **kwargs):
+        """
+            Holt alle verfügbaren Regeln für die Darstellung.
+
+            Hier wird die get_context_data-Funktion der CreateView-Klasse überschrieben.
+            Es wird mit datenAnBackendSenden versucht die Daten zu holen. 
+            Auf die dabei potentiell entstandenen Fehler wird in allgemeineFehlerPruefung geprüft.
+            Bei vorhandenen Fehlern wird von der Funktion ein True zurückgegeben
+            was zu einem Redirect auf die FehlerView führt. Bei False wird die 
+            serverAntwort im Context gespeichert, um eine Darstellung der Regeln zu ermöglichen"""
+        serverAntwort = datenAnBackendSenden(
+            hauptPfad = "regel/",
+            unterPfad = "getalle", 
+            daten     = {
+            "benutzer_id" : self.request.user.username,
+            }
+        )
+
+        if(allgemeineFehlerPruefung(serverAntwort, self.request)):
+            return redirect(reverse("strategie:strategie-fehler"))
+
+        self.object = Strategie()
+        context     = self.get_context_data(object=self.object)
+        context["regeln"] = serverAntwort["regeln"]
+        context["appName"] = appName
+        return self.render_to_response(context)
+
+class StrategieDetailView(getContextMixin, detailViewMixin):
+    """
+        Klasse für das Darstellen einer einzelnen Strategie.
+        """  
+
+    template_name = "strategie/strategie_detail.html" 
+    appName       = appName
+    model         = Strategie
+
+class StrategieBearbeitenView(getContextMixin, bearbeitenViewMixin):
+    """
+        Klasse für das Bearbeiten einer existierendenStrategien.
+        """  
+
+    template_name = "strategie/strategie_bearbeiten.html"  
+    form_class    = StrategieModelForm
+    appName       = appName
+    model         = Strategie
     
+class StrategieEntfernenView(getContextMixin, entfernenViewMixin):
+    """
+        Klasse für das Löschen einer Strategie.
+        """  
 
-class StrategieListeView(ListView):
-    template_name = 'strategie/strategie_liste.html' 
+    template_name = "strategie/strategie_entfernen.html" 
+    appName       = appName
+    model         = Strategie
 
-    def get_queryset(self):
-        temp = versuche_request(self, None,"GET",None)
-        if(temp==500):
-            return {}
-        return temp
+class StrategieFehlerView(fehlerViewMixin):
+    """
+        Klasse für das Anzeigen von jeglichen Fehlermeldungen.
+        """
 
-
-class StrategieDetailView(DetailView):
-    template_name = 'strategie/strategie_detail.html' 
-
-    def get_object(self):
-        id_ = self.kwargs.get("id")
-        return versuche_request(self,None,"GET",id_)
-
-class StrategieBearbeitenView(UpdateView):
-    template_name = 'strategie/strategie_bearbeiten.html'  
-    form_class = StrategieModelForm
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)        
-        url = 'http://localhost:8001/regeln/'
-        
-        context['regeln'] = requests.get(url).json()
-        print(context)
-        return context
-    
-    def get_object(self):
-        id_ = self.kwargs.get("id")
-        temp = versuche_request(self,None,"GET",id_)
-        if(temp == 500):
-            return HttpResponse(fehler_message)
-        return temp
-
-    def form_valid(self, form):
-        id_ = self.kwargs.get("id")
-        form.cleaned_data['nutzername'] = self.request.user.username
-        temp = versuche_request(self,form,"PUT",id_)
-        if(temp==500):
-            return HttpResponse(fehler_message)    
-        if(temp==200):
-            return super().form_valid(form) 
-
-
-class StrategieEntfernenView(DeleteView):
-    template_name = 'strategie/strategie_entfernen.html' 
-    
-    def get_object(self):
-        id_ = self.kwargs.get("id")
-        temp = versuche_request(self,None,"GET",id_)
-        if(temp == 500):
-            return HttpResponse(fehler_message)
-        return temp
-
-    def get_success_url(self):
-        return reverse('strategie:strategie-liste') 
-
-
-def versuche_request(outerself, form, http_methode, id):
-    url = 'http://localhost:8001/strategien/'
-    if(id != None):
-        url = url + str(id)+"/"
-    if(form!=None):
-        daten=form.cleaned_data
-    try:
-        if(http_methode=="GET"):
-            queryset = requests.get(url)
-            if(id == None):
-                queryset = queryset.json()
-                return queryset
-        if(http_methode=="POST"):
-            queryset = requests.post(url, data=daten)
-        if(http_methode=="PUT"):
-            queryset = requests.put(url, data=daten)
-        if(http_methode=="DELETE"):
-            url = 'http://localhost:8001/strategien/entfernen/'+ str(id)+"/"
-            queryset = requests.get(url)
-        
-    except ConnectionError as e:
-        return 500
-    if(id !=None and http_methode=="GET"):
-        jsonObjekt = json.loads(queryset.text)
-        objektFuerDarstellung = Strategie()
-        for key in jsonObjekt.keys(): 
-            if key in dir(objektFuerDarstellung):
-                setattr(objektFuerDarstellung,key,jsonObjekt[key])
-        return objektFuerDarstellung
-    return 200
+    appName       = appName

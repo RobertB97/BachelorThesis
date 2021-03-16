@@ -1,14 +1,21 @@
 from django.db import models
 from django.urls import reverse
-# Create your models here.
+
+# Create your models here. 
 class Simulation(models.Model):
-    ISIN                = models.CharField(max_length=50)
-    strategie           = models.CharField(max_length=255, blank=True,default="default_wert") # Die ausgewählte Strategie
+    '''
+    Klasse des Simulation Models.
+    Besteht aus den Felder "isin", "strategie", "von_datum", "bis_datum", und "startkapital"
+    '''
+    isin                = models.CharField(max_length=12,blank=True,null=True)  # Die ausgewählte ISIN
+    strategie           = models.CharField(max_length=255,blank=True,null=True) # Die ausgewählte Strategie
     von_datum           = models.DateField()
     bis_datum           = models.DateField()
-    startkapital        = models.DecimalField(max_digits=30,decimal_places=2)
-    nutzername          = models.CharField(max_length=30)
+    startkapital        = models.IntegerField()
     
 
     def get_absolute_url(self):
+        """
+        Wird als "Success-url" bei erfolgreichem Ausfüllen des Forms verwendet.
+        """
         return reverse("simulation:simulation-ergebnis", kwargs={})

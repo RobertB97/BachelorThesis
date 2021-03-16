@@ -5,25 +5,26 @@
 {%load static%}
 
 {% block style %}
-    <link rel="stylesheet" href="{% static 'drag-and-drop.css' %}">
+    <link rel = "stylesheet" href = "{% static 'drag-and-drop.css' %}">
 {% endblock %} 
 
 {% block skripte %}
-    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-    <script src="{% static 'drag-and-drop.js' %}" defer></script> 
+    <script src = "https://code.jquery.com/jquery-3.5.1.js" integrity = "sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin = "anonymous"></script>
+    <script src = "{% static 'drag-and-drop.js' %}" defer></script> 
 {% endblock %} 
 
 {%block content%}
     <article>
         <h1>
             {% include 'zurueck_pfeil.html'%}
-            Strategie hinzufügen
+            Strategie bearbeiten
         </h1>
         
-        <form action="." method="post" onsubmit="ausgewählteRegelnSpeichern()"> {% csrf_token %}
+        <form action = "." method = "post" onsubmit = "ausgewählteRegelnSpeichern()"> {% csrf_token %}
             {{form.as_p}}  
-            {% include './drag_and_drop.html'%}
-            <input id="submit" type='submit' value="Speichern">
-        </form>       
+
+            {% include 'modulViews/drag_and_drop.html'%}
+            <input id = "submit" type = 'submit' value = "Speichern">
+        </form>   
     </article>
 {%endblock%}

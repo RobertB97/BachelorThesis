@@ -1,0 +1,57 @@
+{%extends 'base.html' %}
+
+{% block titel %}TechTrader | {{appName | title }} hinzufügen{%endblock%}
+    
+{% if appName == "strategie" %}
+    {% block style %}
+        {%load static%} 
+        <link rel="stylesheet" href="{% static 'drag-and-drop.css' %}">
+    {% endblock %} 
+
+    {% block skripte %}
+        <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+        <script src="{% static 'drag-and-drop.js' %}" defer></script> 
+    {% endblock %} 
+{% endif %}
+
+{%block content%}
+  <article>
+      <h1>
+      {% include 'zurueck_pfeil.html'%}
+      {{appName | title }} hinzufügen
+      </h1>
+
+     
+        {% if appName == "strategie" %}
+            <form action = "." method = "post" onsubmit = "ausgewählteRegelnSpeichern()"> {% csrf_token %}
+            {{form.as_p}}  
+            {% include './drag_and_drop.html'%}
+            <input id="submit" type='submit' value="Erstellen">
+             </form>   
+        {% else %}
+            <form action = "." method = "post"> {% csrf_token %}
+
+                <label class = "labelspan">Name :</label>
+                {{form.name}}
+
+                <label class = "labelspan">Beschreibung :</label>
+                {{form.beschreibung}}
+                
+                {% if appName == "indikator" %}
+                    <label class = "labelspan">Code :</label>
+                    {{form.berechnung_pseudo_code}}
+                    {{form.eigene_skala}}
+                    <label class = "labelspan">Eigene Skala verwenden?</label>
+                {%endif%}
+
+                {% if appName == "regel" %}
+                    <label class = "labelspan">Code :</label>
+                    {{form.berechnung_pseudo_code}}
+                    
+                {%endif%}
+
+                <input id = "submit" class = "nonefloat" type = 'submit' value = "Erstellen">
+            </form>
+        {%endif%}    
+  </article>
+{%endblock%}

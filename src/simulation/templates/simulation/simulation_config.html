@@ -5,8 +5,10 @@
 {%load static%} 
 
 {%block skripte%}
-    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="  crossorigin="anonymous"></script>
-    <script src="{% static 'dropdown.js' %}" defer></script> 
+    <script src = "https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="  crossorigin = "anonymous"></script>
+    <script src = "{% static 'dropdown.js' %}" defer></script> 
+    <link href  = "{% static 'dropdownMitSuche.css' %}" rel = "stylesheet" />
+    <script src = "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 {% endblock %} 
 
 {%block content%}
@@ -14,16 +16,30 @@
         <h1>
             Simulation konfigurieren  
         </h1>
-        
-        <form action="." method="post" onsubmit="ausgewählteStrategieSpeichern()"> {% csrf_token %}
+
+        <form action = "." method = "post" onsubmit = "alleEingabenSpeichern()"> {% csrf_token %}
             {{form.as_p}}  
-            <select id="addsimhead">
-            <option value="">Bitte wählen Sie eine Strategie aus.</option>
+            <label class = "labelspan">Strategie :</label>
+            <select id = "addsimhead" required>
             {% for strategie in strategien %}
-                <option value="{{strategie.id}}">{{strategie.id}} - {{strategie.name}} - {{strategie.beschreibung}}</option>
+                <option value = "{{strategie.id}}">{{strategie.id}} - {{strategie.name}} - {{strategie.beschreibung}}</option>
             {%endfor%}
             </select>
-            <input id="submit" type='submit' value="Simulieren">
+            <label class = "labelspan">ISIN :</label>
+            
+            <select id = "addsimhead2" required>
+            {% for isin in isins %}
+                <option value = "{{isin.isin}}">{{isin.name}} - {{isin.isin}}</option>
+            {%endfor%}
+            </select>
+            <input id = "submit" type = 'submit' value = "Simulieren">
         </form>
     </article>
+
+    <script>
+        $(document).ready(function() {
+            $('#addsimhead2').select2();
+            $('#addsimhead').select2();
+        });
+    </script>
 {%endblock%}

@@ -2,6 +2,6 @@ from django.contrib import admin
 
 from .models import Regel
 
-# Register your models here.
+# Hier wird das Regel model für den Admin Panel verfügbar. 
 
 admin.site.register(Regel)
