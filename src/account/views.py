@@ -25,12 +25,12 @@ def registration_view(request):
 
         if form.is_valid():
             form.cleaned_data["email"] = form.cleaned_data.get('email').lower()
-            form.save()
+            form.save() 
             login(
                 request = request,
                 account = authenticate(
                     email    = form.cleaned_data.get('email'),
-                    password = form.cleaned_data.get('password1')
+                    password = form.cleaned_data.get('password1') # da beide Passwort-Eingaben identisch, reicht der Wert der ersten
                 )
             )
             return redirect('/home/')
@@ -59,7 +59,6 @@ def login_view(request):
                 Mit den Benutzerdaten wird eine Authentifizierung gemacht. 
                 Wenn valid zum Home-Screen weiterleiten
         """
-
     if request.user.is_authenticated:
         return redirect("/home/")
 
@@ -71,11 +70,11 @@ def login_view(request):
                 email    = request.POST['email'].lower(), 
                 password = request.POST['password']
             )
-
             if request.user:
                 login(request, request.user)
                 return redirect("/home/")
-
+        else:
+            return render(request, 'account/login.html', {"form" : form})
     else:
         return render(request, 'account/login.html', {"form" : AccountAuthenticationForm()})
 

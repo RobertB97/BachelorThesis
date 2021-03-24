@@ -1,0 +1,24 @@
+{%extends 'base.html' %}
+
+{% block titel %}TechTrader | {{appName | title }} hinzufügen{%endblock%}
+    
+{%block content%}
+  <article>
+        <h1>
+            {% include 'zurueck_pfeil.html'%}
+
+            {{appName | title }} hinzufügen
+        </h1>
+
+        {% include './generisch_Elemente/generisch_formular.html'%} 
+        
+        {% if appName == "indikator"  %}
+          <input id = "submit" class = "nonefloat" type = 'submit' value = "Erstellen">
+        {% else %}
+          <input id="submit" type='submit' value="Erstellen">
+        {% endif %}
+
+        
+        </form>
+  </article>
+{%endblock%}

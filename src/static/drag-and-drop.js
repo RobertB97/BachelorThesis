@@ -21,21 +21,22 @@ function regelnLaden(){
   // regelnLaden nimmt die Werte im versteckten Regeln Feld und speichert sie einzeln in eine Liste 
   // Der Wert ist hierbei eine Liste mit den IDs der verwendeten Regeln
   const regelnListe = $("#id_regeln").val().replace(/[\[\]']+/g,'').split(", ")
-  regelIDs = []
-  
+  verwendeteRegelnIDListe = []
   // Die RegelIDs werden als String im entsprechenden Format in eine Liste gespeichert
   for(i = 0; i < regelnListe.length; i++){
-    regelIDs.push("Regel-ID: " + regelnListe[i][0] + " ")
+    verwendeteRegelnIDListe.push("Regel-ID: " + regelnListe[i] + " ")
   }
-
-  draggableListe.forEach(element => {
+  //
+  verwendeteRegelnIDListe.forEach(einzelneRegelID => {
+    draggableListe.forEach(element => {
     // von jedem ziehbaren Element wird der Inhalt geholt (also jede Regel)
     regelID = element.querySelector('.dnd_id').innerHTML
-    
-    // und geprüft ob die Regel in der regelIDs Liste vorkommt
-    if(regelIDs.includes(regelID))
-      // Wenn ja, in den ersten Container einfügen, also den Container mit den verwendeten Regeln
-      containerListe[0].append(element)
+    // und geprüft ob die Regel in der verwendeteRegelnIDListe vorkommt
+      if(regelID == einzelneRegelID){
+        // Wenn ja, in den ersten Container einfügen, also den Container mit den verwendeten Regeln
+        containerListe[0].append(element)
+      }
+    })
   })
 }
 
@@ -86,9 +87,11 @@ containerListe.forEach(container => {
 function ausgewählteRegelnSpeichern(){
   //go through all rules in the container and add only the necessary elements to a json
   var regeln = elementChildNodes(containerListe[0])
+  
   regelIDListe = []
   regeln.forEach(regel => {
     var regelChildren = elementChildNodes(regel)
+    console.log(regelChildren[1].innerHTML)
     var id = regelChildren[1].innerHTML.replace("Regel-ID: ","");
     regelIDListe.push(id)
     

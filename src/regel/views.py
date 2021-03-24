@@ -17,7 +17,8 @@ class RegelListeView(listenViewMixin):
     """
         Klasse der Ansicht für das Darstellen der Regeln in einer Liste.
         """  
-    appName             = appName
+    appName = appName
+    model   = Regel
 
 class RegelHinzufuegenView(hinzufuegenViewMixin): 
     """
@@ -34,7 +35,6 @@ class RegelDetailView(detailViewMixin):
         Klasse der Ansicht für das Darstellen einer einzelnen Regel.
         """  
     
-    template_name = 'modulViews/generisch_detail.html'  
     appName       = appName
     model         = Regel 
     
@@ -43,7 +43,6 @@ class RegelBearbeitenView(bearbeitenViewMixin):
         Klasse der Ansicht für das Bearbeiten einer existierenden Regel.
         """  
 
-    template_name = 'modulViews/generisch_bearbeiten.html' 
     form_class    = RegelModelForm
     appName       = appName
     model         = Regel
@@ -53,7 +52,6 @@ class RegelEntfernenView(entfernenViewMixin):
         Klasse der Ansicht für das Löschen einer Regel.
         """  
 
-    template_name = 'modulViews/generisch_entfernen.html' 
     appName       = appName
     model         = Regel
 

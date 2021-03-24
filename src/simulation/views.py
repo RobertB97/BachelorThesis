@@ -235,7 +235,6 @@ class SimulationErgebnisView(View):
         keyList     = []
         listenDict  = {}
 
-        print(indikatoren)
         # Jeder einzelne Key wird in die Key-Liste gespeichert und für jeden Key wird im ListenDict eine leere Liste erstellt.
         # Der erste key ist immer der Zeitstempel, die darauf folgenden sind die keys der Indikatoren
         for key in indikatoren[0]:
@@ -343,7 +342,7 @@ class SimulationErgebnisView(View):
                             plot.line(
                                 zeitstempelDataFrame["zeitstempel"], 
                                 line[i],
-                                line_width=3, color=farbe, alpha=1, 
+                                line_width=3, color=next(colors), alpha=1, 
                                 legend_label=key+"-"+i
                             )
 
@@ -496,10 +495,8 @@ def downloadCSV(request):
     counter = 0
     # Hier werden die einzelnen Spaltennamen zur spaltenNamenZeile Liste angefügt 
     # Abhängig von der bereichBreite, werden entsprechend viele Bezeichnungen zur spaltenNamenZeile hinzugefügt. Nach jedem Bereich kommt eine leere Spalte
-    print(bereichBreiten)
     for breite in bereichBreiten:
         for i in range(breite):
-            print(spaltenNamenListe[counter])
             spaltenNamenZeile.append(spaltenNamenListe[counter])
             counter += 1
         spaltenNamenZeile.append("") # Leere Spalte zwischen Bereichen
@@ -515,6 +512,8 @@ def downloadCSV(request):
             if(wert != "zeitstempel"):
                 # Werte an Zeile anfügen, Punkt mit Komma ersetzen für deutsche Darstellung
                 einzelneZeile.append(str(daten["kurs_zeitreihe"][idx][wert]).replace(".",",")) 
+
+        einzelneZeile.append("") #Spalte zwischen Bereichen  
 
         # für jeden einzelne Wert in der strategie_kurs_zeitreihe außer zeitstempel
         for element in daten["strategie_kurs_zeitreihe"][0]:

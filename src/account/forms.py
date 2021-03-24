@@ -45,7 +45,7 @@ class RegistrationForm(UserCreationForm):
 		for fieldname in ['username', 'password1', 'password2']:
 			self.fields[fieldname].help_text = None
 
-		self.fields['email'].label = 'E-Mail'
+		self.fields['email'].label 	   = 'E-Mail'
 		self.fields['password1'].label = 'Passwort'
 		self.fields['password2'].label = 'Passwort bestätigen'
 	
@@ -55,7 +55,7 @@ class RegistrationForm(UserCreationForm):
 			Wenn Account mit der angegebenen Email gefunden, Fehler werfen.
 		"""
 		email = self.cleaned_data['email'].lower()
-
+		
 		try:
 			match = Account.objects.get(email = email) # Versuche Account Objekt mit angegebenen Email zu holen
 		except Account.DoesNotExist:

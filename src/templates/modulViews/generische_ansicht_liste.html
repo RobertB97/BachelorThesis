@@ -13,7 +13,7 @@
     <form action = "./hinzufuegen/">
       <input id = "btnadd" type = "submit" value = "+ {{appName | title}} hinzufügen" />
     </form>
-
+    <p> * globale Objekte </p>
     <table>
       <colgroup>
         <col span = "1" style = "width: 7%">
@@ -28,13 +28,13 @@
 
       {% for objekt in object_list%}
         {%if objekt.benutzer_id == "superuser" %}
-          <tr class = 'clickable-row' data-href = "{% url ""|add:appName|add:":"|add:appName|add:"-details" id = objekt.id %}"> 
-            <td class = "superuserdata">{{objekt.id}}</td>
-            <td class = "superuserdata">{{objekt.name}}</td>
-            <td class = "superuserdata">{{objekt.beschreibung}}</td>
+          <tr class = 'clickable-row' data-href = "{% url ""|add:appName|add:":"|add:appName|add:"-details" id=objekt.id %}"> 
+            <td>{{objekt.id}}*</td>
+            <td>{{objekt.name}}</td>
+            <td>{{objekt.beschreibung}}</td>
           </tr>
             {%else%}
-              <tr class = 'clickable-row' data-href = "{% url ""|add:appName|add:":"|add:appName|add:"-details"  id = objekt.id %}"> 
+              <tr class = 'clickable-row' data-href = "{% url ""|add:appName|add:":"|add:appName|add:"-details" id=objekt.id %}"> 
             <td style = "width: 30px">{{objekt.id}}</td>
             <td>{{objekt.name}}</td>
             <td>{{objekt.beschreibung}}</td>
@@ -42,6 +42,7 @@
         {%endif%}
       {%endfor%}
     </table>
+    
   </article>
 
   <script>

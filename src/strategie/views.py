@@ -48,12 +48,18 @@ class getContextMixin:
         verwendeteRegelListe = []
 
         # Liste mit verwendeten Regeln erstellen.
-        for regel in serverAntwort["regeln"]:
-            if(regel["id"] in self.request.session["verwendete-regeln"]):
-                verwendeteRegelListe.append(regel)
+        
+        for verwendeteRegel in self.request.session["verwendete-regeln"]:
 
+            for regel in serverAntwort["regeln"]:
+                if(regel["id"] == verwendeteRegel):
+                    verwendeteRegelListe.append(regel)
+
+        for i in verwendeteRegelListe:
+            print(i["id"])
         # Alle Regeln im Context speichern
         context["regeln"]           = serverAntwort["regeln"]
+
         # Alle verwendeten Regeln im Context speichern
         context["verwendeteRegeln"] = verwendeteRegelListe
         # Den bearbeitbar-Wert in Context speichern. Wichtig für DetailAnsicht
@@ -65,7 +71,8 @@ class StrategieListeView(listenViewMixin):
         Klasse für das Darstellen der Strategien in einer Liste.
         """  
 
-    appName             = appName
+    appName = appName
+    model   = Strategie
 
 class StrategieHinzufuegenView(hinzufuegenViewMixin):
     """
@@ -103,7 +110,7 @@ class StrategieHinzufuegenView(hinzufuegenViewMixin):
 
         self.object = Strategie()
         context     = self.get_context_data(object=self.object)
-        context["regeln"] = serverAntwort["regeln"]
+        context["regeln"]  = serverAntwort["regeln"]
         context["appName"] = appName
         return self.render_to_response(context)
 
@@ -112,7 +119,6 @@ class StrategieDetailView(getContextMixin, detailViewMixin):
         Klasse für das Darstellen einer einzelnen Strategie.
         """  
 
-    template_name = "strategie/strategie_detail.html" 
     appName       = appName
     model         = Strategie
 
@@ -121,7 +127,6 @@ class StrategieBearbeitenView(getContextMixin, bearbeitenViewMixin):
         Klasse für das Bearbeiten einer existierendenStrategien.
         """  
 
-    template_name = "strategie/strategie_bearbeiten.html"  
     form_class    = StrategieModelForm
     appName       = appName
     model         = Strategie
@@ -131,7 +136,6 @@ class StrategieEntfernenView(getContextMixin, entfernenViewMixin):
         Klasse für das Löschen einer Strategie.
         """  
 
-    template_name = "strategie/strategie_entfernen.html" 
     appName       = appName
     model         = Strategie
 

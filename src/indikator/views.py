@@ -42,7 +42,8 @@ class IndikatorListeView(listenViewMixin):
         Klasse der Ansicht für das Darstellen der Indikatoren in einer Liste.
         """  
          
-    appName             = appName
+    appName = appName
+    model   = Indikator
 
 class IndikatorHinzufuegenView(hinzufuegenViewMixin):  
     """
@@ -60,7 +61,6 @@ class IndikatorDetailView(detailViewMixin):
         Klasse der Ansicht für das Darstellen eines einzelnen Indikators.
         """  
     
-    template_name = 'modulViews/generisch_detail.html' 
     appName       = appName
     model         = Indikator 
 
@@ -69,7 +69,6 @@ class IndikatorBearbeitenView(bearbeitenViewMixin):
         Klasse der Ansicht für das Bearbeiten eines existierenden Indikators.
         """  
 
-    template_name = 'modulViews/generisch_bearbeiten.html'  
     form_class    = IndikatorModelForm
     appName       = appName
     model         = Indikator 
@@ -79,7 +78,6 @@ class IndikatorEntfernenView(entfernenViewMixin):
         Klasse der Ansicht für das Löschen eines Indikators.
         """  
 
-    template_name = 'modulViews/generisch_entfernen.html' 
     appName       = appName
     model         = Indikator
     

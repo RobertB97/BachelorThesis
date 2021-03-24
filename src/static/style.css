@@ -321,7 +321,7 @@ nav li#user-info>span:after {
 
 /* Tables */
 table { 
-    width:80%;
+    width:95%;
     max-width: 1150px;
     border-collapse: separate; 
     border-spacing: 0 10px; 
@@ -342,15 +342,9 @@ td {
     border-style: solid none;
     text-align:left;
     padding-left: 20px;
-    word-break: break-all;
+    word-break: break-word;
     min-width: 30px;
 }
-
-.superuserdata {
-    background: rgba(255, 230, 0, 0.8);
-    color : #233443;
-}
-
 
 td:first-child {
     border-top-left-radius: 10px; 

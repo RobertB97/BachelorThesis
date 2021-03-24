@@ -21,6 +21,7 @@ class CustomPasswordValidator():
         fehlendeEigenschaften = [] # Liste mit allen fehlenden Eigenschaften
         sonderzeichen         = "[~\!@#\$%\^&\*\(\)_\+{}\":;'\[\]]"
         
+
         if (len(password) < 8):
             fehlendeEigenschaften.append('Passwort muss  mind. %d Zeichen enthalten.' % mind_Laenge)
 
@@ -32,8 +33,9 @@ class CustomPasswordValidator():
 
         if not any(zeichen in sonderzeichen for zeichen in password):
             fehlendeEigenschaften.append('Passwort muss mind. %d Sonderzeichen enthalten.' % vorkommenAnzahl)
-
-        raise ValidationError(fehlendeEigenschaften)
+            
+        if(len(fehlendeEigenschaften) > 0):
+            raise ValidationError(fehlendeEigenschaften)
 
     def get_help_text(self):
         # Muss überschrieben werden

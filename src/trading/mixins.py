@@ -1,8 +1,8 @@
 import requests
 import json
 
-from django.conf            import settings
-from django.shortcuts       import redirect, reverse
+from django.conf          import settings
+from django.shortcuts     import redirect, reverse
 
 from django.views.generic import (
     ListView,
@@ -47,8 +47,10 @@ class listenViewMixin(ListView):
     Verwendet das template "modulViews/generisch_liste.html".
     Holt die entsprechenden Daten für die Listenansicht und wandelt sie in das benötigte Format.
     """
-    template_name       = "modulViews/generisch_liste.html"
-    appName             = None 
+    template_name       = "modulViews/generische_ansicht_liste.html"
+    appName             = None
+    model               = None
+
 
     def get_context_data(self, *args, **kwargs):
         """
@@ -75,21 +77,20 @@ class listenViewMixin(ListView):
             Die Objekte in den Daten werden in das QuerySet von ListeView, welches eine Auflistung in der UI ermöglicht.
             Mit super.get() wird diese Funktion im allgemeinen Klassen-Kontext aufgerufen um Zugang zu den Daten außerhalb der Funktion zu erhalten.
             """
-        
+        self.model.objects.all().delete()
         unterPfad     = "getalle"
         daten         = {
             "benutzer_id" : self.request.user.username,
         }
-        serverAntwort = datenAnBackendSenden(self.appName+"/", unterPfad, daten)
-
+        serverAntwort = datenAnBackendSenden(self.appName + "/", unterPfad, daten)
         if(allgemeineFehlerPruefung(serverAntwort, request)):
             return redirect(reverse(self.appName + ":" + self.appName + "-fehler")) #appName:appName-fehler
         
-        elementeBezeichung = self.appName
-        if(appName == "indikator")
-            elementeBezeichung = elementeBezeichung + "en" # indikator + en
+        elementeBezeichnung = self.appName
+        if(self.appName == "indikator"):
+            elementeBezeichnung = elementeBezeichnung + "en" # indikator + en
         else:
-            elementeBezeichung = elementeBezeichung + "n" # regel + n und strategie + n
+            elementeBezeichnung = elementeBezeichnung + "n" # regel + n und strategie + n
 
         self.queryset = serverAntwort[elementeBezeichnung]
         return super().get(request, *args, **kwargs)
@@ -101,7 +102,7 @@ class hinzufuegenViewMixin(CreateView):
     Holt die entsprechenden Daten für die Listenansicht und wandelt sie in das benötigte Format.
     """
 
-    template_name = "modulViews/generisch_hinzufuegen.html"
+    template_name = "modulViews/generische_ansicht_hinzufuegen.html"
     form_class    = None
     appName       = None
     model         = None
@@ -172,7 +173,7 @@ class detailViewMixin(renderObjectHolenMixin,DetailView):
         - istDetailView = True => RenderObjekt muss nicht bearbeitbar sein, damit es von renderObjectHolenMixin zurückgegeben wird.
     Hat die zusätzliche Methode get_context_data.
     """
-    template_name       = None
+    template_name = 'modulViews/generische_ansicht_detail.html'  
     appName             = None
     model               = None
     hauptPfad           = None
@@ -197,7 +198,7 @@ class bearbeitenViewMixin(renderObjectHolenMixin,hinzufuegenViewMixin):
         - leerzeichenErsetzen = False => Leerzeichen sollen nicht durch &nbsp ersetzt werden.
         - istDetailView = False => RenderObjekt muss bearbeitbar sein, damit es von renderObjectHolenMixin zurückgegeben wird.
     """
-    template_name       = None
+    template_name = "modulViews/generische_ansicht_bearbeiten.html"
     form_class          = None
     appName             = None
     model               = None
@@ -213,7 +214,7 @@ class entfernenViewMixin(renderObjectHolenMixin, DeleteView):
         - leerzeichenErsetzen = True => Leerzeichen sollen durch &nbsp ersetzt werden.
         - istDetailView = False => RenderObjekt muss bearbeitbar sein, damit es von renderObjectHolenMixin zurückgegeben wird.
     """
-    template_name       = None
+    template_name       = 'modulViews/generische_ansicht_entfernen.html' 
     appName             = None
     model               = None
     leerzeichenErsetzen = True
@@ -251,7 +252,7 @@ class fehlerViewMixin(TemplateView):
     Verallgemeinerte Fehler Anisicht. 
     """
     appName       = None
-    template_name = "modulViews/generisch_fehler.html"
+    template_name = "modulViews/generische_ansicht_fehler.html"
 
     def get(self, request):
         """
@@ -446,11 +447,10 @@ def renderObjekt(callerSelf, objekttyp, model, hauptPfad, fehlerSeite, leerzeich
             setattr(objektFuerDarstellung, "berechnung_pseudo_code", objektFuerDarstellung.berechnung_pseudo_code.replace("	","&nbsp&nbsp&nbsp&nbsp")) #Tabulator durch 4 HTML-Leerzeichen ersetzen
     
     if(objekttyp == "strategie"):
+        
         callerSelf.request.session["verwendete-regeln"] = serverAntwort[objekttyp]["regeln"]
-
 
     callerSelf.object  = objektFuerDarstellung
     context            = callerSelf.get_context_data(object = callerSelf.object)
     context["appName"] = objekttyp
     return callerSelf.render_to_response(context)
-
