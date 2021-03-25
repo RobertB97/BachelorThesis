@@ -1,63 +1,147 @@
-from django.urls import reverse
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import (
-    CreateView,
-    ListView,
-    DetailView,  
-    UpdateView,
-    DeleteView
+# django imports
+from django.shortcuts import  redirect, reverse
+
+from trading.mixins import (
+    listenViewMixin,
+    hinzufuegenViewMixin,
+    detailViewMixin,
+    bearbeitenViewMixin,
+    entfernenViewMixin,
+    fehlerViewMixin,
+    allgemeineFehlerPruefung,
+    datenAnBackendSenden,
 )
-from .forms import StrategieModelForm
-from .models import Strategie
+# Regel app import
 from regel.models import Regel
 
-class StrategieErstellenView(CreateView):
+# Strategie app imports
+from .forms  import StrategieModelForm
+from .models import Strategie
+
+appName           = "strategie"
+
+class getContextMixin:
+    """
+        Klasse, welche die get_context_data Funktion zur verfügung stellt. Diese Funktion 
+        ist bei StrategieDetailView, StrategieBearbeitenView und StrategieEntfernenView identisch.
+
+    """
+    def get_context_data(self, *args, **kwargs):
+        """
+            Holt die Daten aller Regeln. Die Daten der verwendeten Regel werden in eine eigene Liste gespeichert.
+
+        """
     
-    template_name = 'strategie/strategie_erstellen.html'
-    form_class = StrategieModelForm
-    success_url = '/strategien/' 
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['regeln'] = Regel.objects.all()
+        context   = super().get_context_data(**kwargs)   
+        
+        # Daten an Backend senden.
+        serverAntwort = datenAnBackendSenden(
+            hauptPfad = "regel/", 
+            unterPfad = "getalle", 
+            daten     = {"benutzer_id": self.request.user.username}
+        )
+
+        # ServerAntwort auf Fehler prüfen. Bei gefundenen Fehler auf FehlerSeite leiten.
+        if(allgemeineFehlerPruefung(serverAntwort, self.request)):
+            return redirect(reverse("strategie:strategie-fehler"))
+        
+        verwendeteRegelListe = []
+
+        # Liste mit verwendeten Regeln erstellen.
+        
+        for verwendeteRegel in self.request.session["verwendete-regeln"]:
+
+            for regel in serverAntwort["regeln"]:
+                if(regel["id"] == verwendeteRegel):
+                    verwendeteRegelListe.append(regel)
+
+        for i in verwendeteRegelListe:
+            print(i["id"])
+        # Alle Regeln im Context speichern
+        context["regeln"]           = serverAntwort["regeln"]
+
+        # Alle verwendeten Regeln im Context speichern
+        context["verwendeteRegeln"] = verwendeteRegelListe
+        # Den bearbeitbar-Wert in Context speichern. Wichtig für DetailAnsicht
+        context["bearbeitbar"]      = self.request.session["bearbeitbar"]
         return context
 
-    def form_valid(self, form):
-        return super().form_valid(form)
+class StrategieListeView(listenViewMixin):
+    """
+        Klasse für das Darstellen der Strategien in einer Liste.
+        """  
+
+    appName = appName
+    model   = Strategie
+
+class StrategieHinzufuegenView(hinzufuegenViewMixin):
+    """
+        Klasse für das Erstellen/ Hinzufügen von neuen Strategien.
+
+        Methoden
+        ------
+        """   
+            
+    form_class    = StrategieModelForm
+    appName       = appName
+    model         = Strategie
+    neuErstellen  = True
+
+    def get(self, request, *args, **kwargs):
+        """
+            Holt alle verfügbaren Regeln für die Darstellung.
+
+            Hier wird die get_context_data-Funktion der CreateView-Klasse überschrieben.
+            Es wird mit datenAnBackendSenden versucht die Daten zu holen. 
+            Auf die dabei potentiell entstandenen Fehler wird in allgemeineFehlerPruefung geprüft.
+            Bei vorhandenen Fehlern wird von der Funktion ein True zurückgegeben
+            was zu einem Redirect auf die FehlerView führt. Bei False wird die 
+            serverAntwort im Context gespeichert, um eine Darstellung der Regeln zu ermöglichen"""
+        serverAntwort = datenAnBackendSenden(
+            hauptPfad = "regel/",
+            unterPfad = "getalle", 
+            daten     = {
+            "benutzer_id" : self.request.user.username,
+            }
+        )
+
+        if(allgemeineFehlerPruefung(serverAntwort, self.request)):
+            return redirect(reverse("strategie:strategie-fehler"))
+
+        self.object = Strategie()
+        context     = self.get_context_data(object=self.object)
+        context["regeln"]  = serverAntwort["regeln"]
+        context["appName"] = appName
+        return self.render_to_response(context)
+
+class StrategieDetailView(getContextMixin, detailViewMixin):
+    """
+        Klasse für das Darstellen einer einzelnen Strategie.
+        """  
+
+    appName       = appName
+    model         = Strategie
+
+class StrategieBearbeitenView(getContextMixin, bearbeitenViewMixin):
+    """
+        Klasse für das Bearbeiten einer existierendenStrategien.
+        """  
+
+    form_class    = StrategieModelForm
+    appName       = appName
+    model         = Strategie
     
+class StrategieEntfernenView(getContextMixin, entfernenViewMixin):
+    """
+        Klasse für das Löschen einer Strategie.
+        """  
 
-class StrategieListeView(ListView):
-    template_name = 'strategie/strategie_liste.html'  # with this command we can set a new path to our templates
-    queryset = Strategie.objects.all() # since its a ListView, Django will look for template <blog>/<modelname>_list.html
+    appName       = appName
+    model         = Strategie
 
-class StrategieDetailView(DetailView):
-    template_name = 'strategie/strategie_detail.html' 
-    #queryset = Article.objects.all() #can be used for filtering the querried objects
+class StrategieFehlerView(fehlerViewMixin):
+    """
+        Klasse für das Anzeigen von jeglichen Fehlermeldungen.
+        """
 
-    def get_object(self):
-        id_ = self.kwargs.get("id")
-        return get_object_or_404(Strategie, id=id_)
-
-class StrategieBearbeitenView(UpdateView):
-    template_name = 'strategie/strategie_bearbeiten.html'  
-    form_class = StrategieModelForm
-    queryset = Strategie.objects.all()
-    
-    def get_object(self):
-        id_ = self.kwargs.get("id")
-        return get_object_or_404(Strategie, id=id_)
-
-    def form_valid(self, form):
-        #TODO add redirect after succesful update or confirmation?
-        return super().form_valid(form)
-
-class StrategieEntfernenView(DeleteView):
-    template_name = 'strategie/strategie_entfernen.html' 
-    #queryset = Article.objects.all() can be used for filtering the querried objects
-    
-    def get_object(self):
-        id_ = self.kwargs.get("id")
-        return get_object_or_404(Strategie, id=id_)
-
-    def get_success_url(self):
-        return reverse('strategie:strategie-liste')
+    appName       = appName

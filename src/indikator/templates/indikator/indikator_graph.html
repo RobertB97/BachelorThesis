@@ -1,0 +1,39 @@
+{%extends 'base.html' %}
+
+{% block titel %}TechTrader | Indikator Graph{%endblock%}
+
+{% block skripte %}
+    <script type = "text/javascript" src = "https://cdn.bokeh.org/bokeh/release/bokeh-2.2.3.min.js"></script>
+    <script type = "text/javascript" src = "https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.2.3.min.js"></script>
+    <script type = "text/javascript" src = "https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.2.3.min.js"></script>
+    <script type = "text/javascript" src = "https://cdn.bokeh.org/bokeh/release/bokeh-api-2.2.3.min.js"></script>
+    {{script|safe}}
+{% endblock %}
+
+{% block content %}
+    <article>
+        <h1 class = "objektinformation">
+            {% include 'zurueck_pfeil.html'%}
+            Indikator "{{daten.name}}"
+        </h1>
+
+        <span class = "labelspan">Beschreibung</span>
+        <p class = "objektinformation">{{daten.beschreibung}}</p>
+        
+        <span class = "labelspan">Code</span>
+        {% autoescape off %}
+            <p>{{daten.berechnung_pseudo_code|linebreaks}}</p>
+        {% endautoescape %}
+        
+        <div id = "statistik">
+            {{div|safe}}
+        </div>
+        
+        {% if bearbeitbar %}
+        <form action = "../bearbeiten/">
+            <input id = "submit"  type = "submit" value = "Bearbeiten" />
+        </form>
+        {%endif%}
+
+    </article>
+{% endblock %}

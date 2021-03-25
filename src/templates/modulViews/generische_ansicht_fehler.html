@@ -1,0 +1,15 @@
+{%extends 'base.html' %}
+
+{% block titel %}TechTrader | {{appName| title}} Fehler{%endblock%}
+
+{% block content %}
+    <article>
+        <h1>
+            Hoppla, da ist wohl etwas schiefgelaufen!
+        </h1>
+
+        <span class = "labelspan">Fehler:</span>
+        <p>{{fehler}}</p>
+
+    </article>
+{% endblock %}

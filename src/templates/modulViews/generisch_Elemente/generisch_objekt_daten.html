@@ -1,0 +1,17 @@
+<span class = "labelspan" >Beschreibung</span>
+    <p class = "objektinformation">{{object.beschreibung}}</p> 
+
+<span class = "labelspan" >Code</span>
+    {% autoescape off %}
+        <p>{{object.berechnung_pseudo_code|linebreaks}}</p>
+    {% endautoescape %}
+
+{%if appName == "indikator" %}
+    <span class = "labelspan">Hat eigene Skala</span>
+    {%if object.eigene_skala%}
+        <p> Ja </p>
+    {%else%}
+        <p> Nein </p> 
+    {%endif%}
+    
+{% endif %}

@@ -1,0 +1,19 @@
+{%extends 'base_ohne_menubar.html' %}
+
+{% block titel %}TechTrader | Login{%endblock%}
+
+{%block content%}
+    <article id = "homewrap">
+        <h1>
+            TechTrader 
+        </h1>
+        
+        <form class = "user-view" role = "form" method = "post">{% csrf_token %}
+            {{ form.as_p}}
+            <button id = "submit" type = "submit" value = "Submit"> Login</button>
+        </form>
+        <p id = "register">Neu bei TechTrader? <a href = "{%url 'registrierung-view' %}">Jetzt registrieren</a></p>
+
+    
+    </article>
+{%endblock%}

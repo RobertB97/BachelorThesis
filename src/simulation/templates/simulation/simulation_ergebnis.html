@@ -1,22 +1,131 @@
 {% extends 'base.html' %}
 
-{% block titel %}Simulation Ergebnis{%endblock%}
+{% block titel %}TechTrader | Simulation Ergebnis{%endblock%}
 
 {% block skripte %}
-    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-2.2.3.min.js"></script>
-    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.2.3.min.js"></script>
-    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.2.3.min.js"></script>
-    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-api-2.2.3.min.js"></script>
+    <script src  = "https://code.jquery.com/jquery-3.5.1.js" integrity = "sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="  crossorigin = "anonymous"></script>
+    <script type = "text/javascript" src = "https://cdn.bokeh.org/bokeh/release/bokeh-2.2.3.min.js"></script>
+    <script type = "text/javascript" src = "https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.2.3.min.js"></script>
+    <script type = "text/javascript" src = "https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.2.3.min.js"></script>
+    <script type = "text/javascript" src = "https://cdn.bokeh.org/bokeh/release/bokeh-api-2.2.3.min.js"></script>
     {{script|safe}}
 {% endblock %}
 
+{% block content %}            
+    <article>
+        <h1 class = "objektinformation">
+            {% include 'zurueck_pfeil.html'%}
+            <span id = "headline1span">
+                ISIN : {{daten.isin}}
+            </span>
+            Simulation auf {{daten.name}}
+        </h1>
 
+        <div id = "statistikdate">
+            <div class = "blocktext">
+                <span class = "labelspan">Strategie-ID:</span>
+                <p>{{daten.strategie_id}}</p>
+            </div>
+            <div class = "blocktext">
+                <span class = "labelspan">Strategie-Name:</span>
+                <p>{{daten.strategie_name}}</p>
+            </div>
+            <div class = "blocktext">
+                <span class="labelspan">Zeitraum von:</span>
+                <p>{{daten.start_datum}}</p>
+            </div>
+            
+            <div class = "blocktext">
+                <span class="labelspan">Zeitraum bis:</span>
+                <p>{{daten.end_datum}}</p>
+            </div>
+        </div>
 
-{% block content %}
+        <div id = "statistik">
+            {{div|safe}}
+        </div>
 
+        <div id = "statefields">
+            <div class = "statecounter">
+                <span class = "yellowcount">{{daten.statistik.start_kapital}}</span>
+                <span class = "countdescription">Startkapital</span>
+            </div>
+            <div class = "statecounter">
+                <span class = "yellowcount">{{daten.statistik.ausgefuerte_kaeufe}}</span>
+                <span class = "countdescription">Käufe</span>
+            </div>
+            <div class = "statecounter">
+                <span class = "yellowcount">{{daten.statistik.ausgefuerte_verkaeaufe}}</span>
+                <span class = "countdescription">Verkäufe</span>
+            </div>
+            <div class = "statecounter">
+                <span class = "yellowcount">{{daten.statistik.gewinn_trades}}</span>
+                <span class = "countdescription">Gewinn-Trades</span>
+            </div>
+            <div class = "statecounter">
+                <span class = "yellowcount">{{daten.statistik.hoch_gesamt}}</span>
+                <span class = "countdescription">Max. Gewinn (%)</span>
+            </div>
+            <div class = "statecounter">
+                <span class = "yellowcount">{{daten.statistik.performance_pro_jahr}}</span>
+                <span class = "countdescription">Ø-Performance pro Jahr (%)</span>
+            </div>
+            <div class = "statecounter">
+                <span class = "yellowcount">{{daten.statistik.maximum_drawdown}}</span>
+                <span class = "countdescription">Max. Drawdown (%)</span>
+            </div>
+            <div class = "statecounter">
+                <span class = "yellowcount">{{daten.statistik.nicht_ausgefuerte_kaeufe}}</span>
+                <span class = "countdescription">Nicht-ausführbare Käufe</span>
+            </div>
+            <div class = "statecounter">
+                <span class = "yellowcount">{{daten.statistik.nicht_ausgefuerte_verkaeaufe}}</span>
+                <span class = "countdescription">Nicht-ausführbare Verkäufe</span>
+            </div>
+            <div class = "statecounter">
+                <span class = "yellowcount">{{daten.statistik.verlust_trades}}</span>
+                <span class = "countdescription">Verlust-Trades</span>
+            </div>
+            <div class = "statecounter">
+                <span class = "yellowcount">{{daten.statistik.tief_gesamt}}</span>
+                <span class = "countdescription">Max. Verlust (%)</span>
+            </div>
+            <div class = "statecounter">
+                <span class = "yellowcount">{{daten.statistik.performance_gesamt}}</span>
+                <span class = "countdescription">Gesamt-Performance (%)</span>
+            </div>
+        </div>
+        <form action = "../download/">
+            <input id = "formzurueck"  type = "submit" value = "Download" />
+        </form> 
+     
+    </article>
 
-    <h1>Hier Simulation Name/Id</h1>
-    {{div|safe}}
+    <script>
+        $(document).ready( function () {
+            // Sobald Dokument fertig geladen, datumKorrigieren aufrufen
+            datumKorrigieren()
+        });
 
+        function datumKorrigieren(){
+            // In dieser Funktion wird das Anzeige-Format der Daten angepasst
+            var daten    = {
+                0 : "{{daten.first.von_datum}}", 
+                1 : "{{daten.first.bis_datum}}"
+            }
+            var elemente = {
+                0 : $("#von_datum"), 
+                1 : $("#bis_datum")
+            }
+            for(i = 0; i < 2; i++){
+                datum   = daten[i]
+                element = elemente[i]
+                datum   = datum.split(/[%-]+/)
+                datum.reverse()
+                datum_komplett = datum.join(".")
+                element.text(datum_komplett.slice(0, -1))
+            }
+        }
+    </script>
 {% endblock %}    
 

@@ -1,21 +1,37 @@
 <!Doctype html>
-<!-- Base Struktur für jede HTML Seite-->
+{% comment %} Base Struktur für jede HTML Seite{% endcomment %}
 <html>
 <head>
-    <title>{% block titel %}{%endblock%}</title>
-    <!-- {% load static %}  probably not needed-->
-
-    {% include "navbar_head.html" %}
-
     
-    {% block style %}{% endblock %} <!-- Block für CSS Style  -->
-    {% block skripte %}{% endblock %}  <!-- zusätzlichen Skripte -->
+    <title>{% block titel %}{% comment %} Block für Tab titel{% endcomment %}{%endblock%}</title>
+    {% load static %}  {% comment %} Tag für das Laden von statischen Daten wie js oder css{% endcomment %}
+    <script src = "https://code.jquery.com/jquery-3.5.1.js" integrity = "sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="  crossorigin = "anonymous"></script>
+    <link rel = "stylesheet" href = "{% static 'style.css' %}">
+
+    {% block style %}{% comment %} Block für weitere CSS Style  {% endcomment %}{% endblock %} 
+    {% block skripte %}{% comment %} zusätzlichen Skripte {% endcomment %}{% endblock %}  
 </head>
 <body>
+    {% include "menubar_body.html" %}
+        
+    <div class = "content-wrapper">
+        {% block content %}{% endblock %}
+    </div>
 
-    {% include "navbar_body.html" %}
-    {% block content %}{% endblock %} <!-- allg. Block für HTML   -->
-
+    <script>
+    {% comment %} Fade-In Animation {% endcomment %}
+    $('.open-menu-btn').on('click', function(){
+        if($('body').hasClass('closed-menu')){
+            $('body').removeClass('closed-menu');
+            setTimeout(function() {
+                $('#logo').show();
+            }, 100);
+            
+        }else{  
+            $('body').addClass('closed-menu');
+            $('#logo').hide();
+        }
+    });
+    </script>
 </body>
 </html>
-

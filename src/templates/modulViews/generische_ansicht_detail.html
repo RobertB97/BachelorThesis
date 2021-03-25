@@ -1,0 +1,38 @@
+{%extends 'base.html' %}
+
+{% block titel %}TechTrader | {{appName | title}} Details{%endblock%}
+
+{% block content %}
+    <article>
+        <h1 class = "objektinformation">
+            {% include 'zurueck_pfeil.html'%}
+            <span id = "headline1span">
+                ID# {{object.id}}
+            </span>
+            {{appName| title}} "{{object.name}}"
+        </h1>
+
+        {% if appName == "strategie" %}
+            {% include './generisch_Elemente/generisch_strategie_daten.html'%}
+        {% else %}
+            {% include './generisch_Elemente/generisch_objekt_daten.html'%}
+        {% endif %}
+    
+        {% if appName == "indikator" %}
+            <form action = "./graph/">
+                <input id = "submit" id = "formzurueck"  type = "submit" value = "Plotten" />
+            </form>  
+        {% endif %}
+
+        {% if bearbeitbar %}
+        <form action = "./bearbeiten/">
+            <input id = "submit"  type = "submit" value = "Bearbeiten" />
+        </form>
+        
+        <form action = "./entfernen/">
+            <input id = "formzurueck"  type = "submit" value = "Entfernen" />
+        </form> 
+        {%endif%}
+        
+    </article>
+{% endblock %}

@@ -1,0 +1,19 @@
+{%extends 'base_ohne_menubar.html' %}
+
+{% block titel %}TechTrader | Registrierung{%endblock%}
+
+{%block content%}
+    <article id = "homewrap">
+
+        <h1>
+            TechTrader
+        </h1>
+
+        <form class = "user-view"  action = "." method = "post">{% csrf_token %}
+            {{ form.as_p }}
+            <input id = "createAccount" type = "submit" value = "Konto anlegen" />
+        </form>
+
+        <a id = "linklogin" href = "{%url 'login-view' %}">Stattdessen anmelden</a>
+    </article>
+{%endblock%}

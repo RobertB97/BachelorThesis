@@ -1,8 +1,6 @@
 from django.contrib import admin
+from .models        import Simulation
 
-# Register your models here.
-from .models import Simulation
-
-# Register your models here.
+# Hier wird das Simulation model für den Admin Panel verfügbar. 
 
 admin.site.register(Simulation)

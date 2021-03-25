@@ -1,0 +1,60 @@
+{%extends 'base.html' %}
+
+{% block titel %}TechTrader | {{appName | title }}{%endblock%}
+
+{%block skripte%}
+  <script src = "https://code.jquery.com/jquery-3.5.1.js" integrity = "sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="  crossorigin = "anonymous"></script>
+{%endblock%}
+
+{%block content%}
+  <article>
+    <h1>{{appName | title }}</h1>
+
+    <form action = "./hinzufuegen/">
+      <input id = "btnadd" type = "submit" value = "+ {{appName | title}} hinzufügen" />
+    </form>
+    <p> * globale Objekte </p>
+    <table>
+      <colgroup>
+        <col span = "1" style = "width: 7%">
+        <col span = "1" style = "width: 30%;">
+        <col span = "1" style = "width: 63%;">
+      </colgroup>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Beschreibung</th>
+      </tr>
+
+      {% for objekt in object_list%}
+        {%if objekt.benutzer_id == "superuser" %}
+          <tr class = 'clickable-row' data-href = "{% url ""|add:appName|add:":"|add:appName|add:"-details" id=objekt.id %}"> 
+            <td>{{objekt.id}}*</td>
+            <td>{{objekt.name}}</td>
+            <td>{{objekt.beschreibung}}</td>
+          </tr>
+            {%else%}
+              <tr class = 'clickable-row' data-href = "{% url ""|add:appName|add:":"|add:appName|add:"-details" id=objekt.id %}"> 
+            <td style = "width: 30px">{{objekt.id}}</td>
+            <td>{{objekt.name}}</td>
+            <td>{{objekt.beschreibung}}</td>
+          </tr>
+        {%endif%}
+      {%endfor%}
+    </table>
+    
+  </article>
+
+  <script>
+    jQuery(document).ready(function($) {
+        $("table tr").hide();
+        $("table tr").each(function(index){
+          $(this).delay(index*100).show(500);
+        });
+      $(".clickable-row").click(function() {
+          window.location = $(this).data("href");
+      });
+    });
+    
+  </script>
+{%endblock%}

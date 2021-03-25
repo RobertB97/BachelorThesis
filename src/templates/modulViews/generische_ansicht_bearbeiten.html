@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block titel %}TechTrader | {{appName | title}} bearbeiten{%endblock%}
+
+{% block content %}
+    <article>
+        <h1>
+            {% include 'zurueck_pfeil.html'%}
+            ID# {{object.id}} bearbeiten
+        </h1>
+         
+        {% include './generisch_Elemente/generisch_formular.html'%}
+
+        {% if appName == "indikator"  %}
+          <input id = "submit" class = "nonefloat" type = 'submit' value = "Speichern">
+        {% else %}
+          <input id="submit" type='submit' value="Speichern">
+        {% endif %}
+
+        </form>
+
+    </article>
+{% endblock %} 

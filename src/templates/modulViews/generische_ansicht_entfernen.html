@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block titel %}TechTrader | {{appName | title}} entfernen{%endblock%}
+
+{% block content %}
+    <article>
+        <h1 class = "objektinformation">
+            {% include 'zurueck_pfeil.html'%}
+            Sind Sie sicher, dass Sie {{appName | title}} "{{object.name}}" entfernen möchten?
+        </h1>
+
+        {% if appName == "strategie" %}
+            {% include './generisch_Elemente/generisch_strategie_daten.html'%}
+        {% else %}
+            {% include './generisch_Elemente/generisch_objekt_daten.html'%}
+        {% endif %}
+
+        <form action = "." method = "POST">{%csrf_token%}
+            <input id = "submit"  type = 'submit' value = 'Ja' /> 
+        </form>
+
+        <form action = "../">
+            <input id = "formzurueck"  type = "submit" value = "Abbrechen" />
+        </form>
+    </article>
+
+{% endblock %} 

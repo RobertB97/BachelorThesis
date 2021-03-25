@@ -26,10 +26,8 @@ SECRET_KEY = 'h44n-^i48tjjo85glfd!-@nb9%+1#2^ll3kbvnadzi=08(fkny'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-
-    '04adfbd5e1d7.ngrok.io',
-    '127.0.0.1'
-     # add ngrok link here, in case of non-local showcase
+    'e17a45c94a9a.ngrok.io', # für ngrok
+    '127.0.0.1' 
 ]
 
 
@@ -44,22 +42,51 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
 
-    #third party
-    'bokeh',
-    'pandas',
+
+    #third party apps
+    'bokeh', # Für die Generierung von Graphen
+    'pandas', # Abhängigkeit von bokeh
     'jsonfield',
+    'ckeditor', # Für Code Highlighter als TextEditor
+    'ckeditor_uploader' , # Für Code Highlighter als TextEditor
     
 
-    #own
-    
-    'strategie',
+    # eigene Apps
+    'account',
     'regel',
     'indikator',
+    'strategie',
     'simulation',
 ]
 
+# CKEDITOR Einstellung, ermöglicht code-snippets mit highlighting
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+CKEDITOR_CONFIGS={
+    'default': {
+        'toolbar': 'Custom',
+        'height': 500,
+        'toolbar_Custom':[
+            ['Bold','Link','Image'],
+        ],
+    },
+    'special': 
+    {'toolbar': 'Special', 'height': 500,
+        'toolbar_Special': 
+            [
+                ['CodeSnippet'], # here
+            ], 
+            'extraPlugins': 'codesnippet', # here
+            'codeSnippet_languages': {
+		        'javascript': 'JavaScript',
+		        'python': 'Python'
+	        }
+        }
+        
+}
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -67,9 +94,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    #Custom Middleware
+    'trading.auth_middleware.AngemeldetMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'trading.urls'
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 TEMPLATES = [
     {
@@ -84,12 +117,12 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             
-            'libraries':{
-                'tags': 'trading.templatetags.tags'
-            }
+            
         },
     },
 ]
+
+AUTH_USER_MODEL = 'account.Account'
 
 WSGI_APPLICATION = 'trading.wsgi.application'
 
@@ -108,18 +141,21 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+AUTH_PASSWORD_VALIDATORS = [ # Djangos Passwort  Validierung deaktiviert und mit eigenem Validierer ersteztz
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
+    {   
+        'NAME': 'account.validation.CustomPasswordValidator', # eigener Validierer
     },
 ]
 
@@ -129,11 +165,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+DATE_FORMAT = "%Y-%m-%d"
+
+TIME_ZONE = 'Europe/London'
+
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 
@@ -149,3 +188,9 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
+
+#Wichtig für die Middleware
+AUTH_EXEMPT_ROUTES = ('registrieren','login','about') #Seiten die nicht betroffen sind von der Weiterleitung
+AUTH_LOGIN_ROUTE = 'login-view' #Seite auf die Weitergeleitet werden soll
+
+BACKEND_URL = "http://9121452905ff.eu.ngrok.io/" # Hier kommt der URL der API des Backends

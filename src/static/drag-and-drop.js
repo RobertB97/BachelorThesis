@@ -1,6 +1,45 @@
 const draggableListe = document.querySelectorAll('.draggable') // Liste mit allen verschiebbaren Elementen
 const containerListe = document.querySelectorAll('.container') // Liste mit allen Containern
 
+// die im HTML Dokument definierten Reminder, wenn die jeweilige RegelListe leer ist
+reminder1 = elementChildNodes(containerListe[0])[0] 
+reminder2 = elementChildNodes(containerListe[1])[0]
+
+$(document).ready( function () {
+  // die reminder werden entfernt
+  containerListe.forEach( container => {
+    if(elementChildNodes(container)[0].className == "reminderwennleer"){
+      elementChildNodes(container)[0].remove()
+    }
+  })
+  regelnLaden()
+  elementeNummerieren()
+  pruefenObLeer()
+});
+
+function regelnLaden(){
+  // regelnLaden nimmt die Werte im versteckten Regeln Feld und speichert sie einzeln in eine Liste 
+  // Der Wert ist hierbei eine Liste mit den IDs der verwendeten Regeln
+  const regelnListe = $("#id_regeln").val().replace(/[\[\]']+/g,'').split(", ")
+  verwendeteRegelnIDListe = []
+  // Die RegelIDs werden als String im entsprechenden Format in eine Liste gespeichert
+  for(i = 0; i < regelnListe.length; i++){
+    verwendeteRegelnIDListe.push("Regel-ID: " + regelnListe[i] + " ")
+  }
+  //
+  verwendeteRegelnIDListe.forEach(einzelneRegelID => {
+    draggableListe.forEach(element => {
+    // von jedem ziehbaren Element wird der Inhalt geholt (also jede Regel)
+    regelID = element.querySelector('.dnd_id').innerHTML
+    // und geprüft ob die Regel in der verwendeteRegelnIDListe vorkommt
+      if(regelID == einzelneRegelID){
+        // Wenn ja, in den ersten Container einfügen, also den Container mit den verwendeten Regeln
+        containerListe[0].append(element)
+      }
+    })
+  })
+}
+
 /** 
  * fügt zu jeden draggable element die eventlistener dragstart und dragend hinzu
  * wenn das element verschoben wird, wird die class dragging hinzugefügt, 
@@ -9,10 +48,10 @@ const containerListe = document.querySelectorAll('.container') // Liste mit alle
 draggableListe.forEach(draggable => {
   draggable.addEventListener('dragstart', () => {
     draggable.classList.add('dragging')
-    draggable.querySelector('.Reihenfolgennummer').innerHTML = ""
+    draggable.querySelector('.dnd_reihenfolgennummer').innerHTML = ""
   }) 
   draggable.addEventListener('dragend', () => {
-
+    pruefenObLeer()
     draggable.classList.remove('dragging')
     
   }) 
@@ -29,12 +68,14 @@ containerListe.forEach(container => {
     e.preventDefault() // per default ist das verschieben nicht erlaubt und das mouse-icon wird verändert. Dieser Befehl verhindert dies
     const folgendesElement = naechstesElementNachDraggable(container, e.clientY)
     const draggable = document.querySelector('.dragging') //das element welches aktuell verschoben wird
+    
     if (folgendesElement == null) {
       container.appendChild(draggable)      
     } else {
       container.insertBefore(draggable, folgendesElement)
     }
     elementeNummerieren()
+    pruefenObLeer();
   })
 })
 
@@ -46,20 +87,46 @@ containerListe.forEach(container => {
 function ausgewählteRegelnSpeichern(){
   //go through all rules in the container and add only the necessary elements to a json
   var regeln = elementChildNodes(containerListe[0])
-  regelnJson = []
-  regeln.forEach(regel=>{
-    var regelChildren = elementChildNodes(regel)
-    regelJson = {
-      "id": regelChildren[1].innerHTML,
-      "name": regelChildren[2].innerHTML,
-      "code": regelChildren[3].innerHTML,
-    }
-    regelnJson.push(regelJson)
-  })
   
-  $("#id_regeln").val(JSON.stringify(regelnJson));
+  regelIDListe = []
+  regeln.forEach(regel => {
+    var regelChildren = elementChildNodes(regel)
+    console.log(regelChildren[1].innerHTML)
+    var id = regelChildren[1].innerHTML.replace("Regel-ID: ","");
+    regelIDListe.push(id)
+    
+  })
+  $("#id_regeln").val(regelIDListe);
 }
 
+
+function pruefenObLeer(){
+  // prüft ob ein Container leer ist
+  counter = 0;
+  containerListe.forEach(container => {
+    if(elementChildNodes(container).length == 0){
+      // wenn ja, wird der entsprechende reminder eingefügt
+      if(counter == 0){
+        container.append(reminder1);
+      }else{
+        container.append(reminder2);
+      }
+      
+    }else{
+      // Wenn nein, wird der reminder entfernt
+      if(elementChildNodes(container).length > 1 ){
+        elementChildNodes(container).forEach(element => {
+          if(element.className == "reminderwennleer"){
+            element.remove()
+          }
+        })
+      }
+      
+    }
+    counter++;
+  })
+}
+ 
 
 /**
  * @description
@@ -70,10 +137,13 @@ function elementeNummerieren(){
     children = elementChildNodes(container)
     counter = 1;
     children.forEach(element => {
-      element.querySelector('.Reihenfolgennummer').innerHTML=counter;
+      if(element.className != "" && element.className != "reminderwennleer"){
+        element.querySelector('.dnd_reihenfolgennummer').innerHTML="Regel-Nr. "+counter;
+      }
       counter++;
     })
   })
+  
 }
 
 /**

@@ -1,0 +1,30 @@
+<nav class = "vertical-menu-wrapper">
+    <div class = "vertical-menu-logo">
+        <a href = "/home/" id = "logo" >TechTrader</a>
+        <span class = "open-menu-btn"><hr><hr><hr></span>
+    </div>
+    <ul class = "vertical-menu">
+    {% comment %} Abhängig von aktuellen URL wird im menu_bar das entsprechende Element gelb markiert {% endcomment %}
+        <li>
+            <a href = "/simulationen/" {% if '/simulationen/' in request.path %} class = 'active'{%else%} class = "inactive" {%endif%}>Simulationen</a>
+        </li>
+        <li>
+            <a href = "/strategien/" {% if  '/strategien/' in request.path %} class = 'active' {%else%} class = "inactive" {%endif%}>Strategien</a>
+        </li>
+        <li>
+            <a href = "/regeln/" {% if '/regeln/' in request.path %} class = 'active' {%else%} class = "inactive" {%endif%}>Regeln</a>
+        </li>
+        <li>
+            <a href = "/indikatoren/" {% if '/indikatoren/' in request.path%} class = 'active' {%else%} class = "inactive" {%endif%}>Indikatoren</a>
+        </li>
+
+        <div id = "vmenu-profil">
+        <li>
+            <a href = "/profil/" {% if '/profil/' in request.path %} class = 'active'{%else%} class = "inactive" {%endif%}>Profil</a>
+        </li>
+        <li>
+            <a href = "{%url 'logout-view' %}">Logout</a>
+        </li>
+        <div> 
+    </ul>
+</nav> 
